@@ -1,1 +1,1 @@
-.
+# app-pagos
