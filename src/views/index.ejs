@@ -10,9 +10,9 @@
 <body>
   <main class="dashboard-main">
     <%- include('components/navbar') %>
-  </main>
+
   <%- include('components/scripts') %>
-  <script src="/publicassets/js/homeTwoChart.js"></script>
+  <script src="../publicassets/js/homeTwoChart.js"></script>
 
   <div class="dashboard-main-body">
 
@@ -43,14 +43,14 @@
                                         <iconify-icon icon="mingcute:user-follow-fill" class="icon"></iconify-icon>
                                     </span>
                                     <div>
-                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Alumnos activos</span>
-                                        <h6 class="fw-semibold">2,000</h6>
+                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Agua</span>
+                                        <h6 class="fw-semibold">ENACAL</h6>
                                     </div>
                                 </div>
 
                                 <!-- <div id="new-user-chart" class="remove-tooltip-title rounded-tooltip-value"></div> -->
                             </div>
-                            <p class="text-sm mb-0">Registrados el dia de hoy</p>
+                            <p class="text-sm mb-0">Al dia</p>
                         </div>
                     </div>
                 </div>
@@ -65,14 +65,17 @@
                                         <iconify-icon icon="mingcute:user-follow-fill" class="icon"></iconify-icon>
                                     </span>
                                     <div>
-                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Docentes activos</span>
-                                        <h6 class="fw-semibold">1,000</h6>
+                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Luz</span>
+                                        <h6 class="fw-semibold">Dissnorte-Disur</h6>
                                     </div>
                                 </div>
 
                                 <!-- <div id="active-user-chart" class="remove-tooltip-title rounded-tooltip-value"></div> -->
                             </div>
-                            <p class="text-sm mb-0">Registrados el dia de hoy</p>
+                            <p class="text-sm mb-0">Pendiente</p>
+                            <button type="button" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                Pagar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -89,63 +92,22 @@
                                             <iconify-icon icon="gridicons:multiple-users" class="text-base text-2xl mb-0"></iconify-icon>
                                         </div>
                                     <div>
-                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Personal de seguridad</span>
-                                        <h6 class="fw-semibold">600</h6>
+                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Seguro Social</span>
+                                        <h6 class="fw-semibold">INSS</h6>
                                     </div>
                                 </div>
 
                                 <!-- <div id="conversion-user-chart" class="remove-tooltip-title rounded-tooltip-value"></div> -->
                             </div>
-                            <p class="text-sm mb-0">Registrados el dia de hoy</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xxl-4 col-sm-6">
-    <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-5">
-        <div class="card-body p-0">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
-
-                <div class="d-flex align-items-center gap-2">
-                    <div class="w-50-px h-50-px bg-purple rounded-circle d-flex justify-content-center align-items-center">
-                        <iconify-icon icon="fa-solid:award" class="text-base text-2xl mb-0"></iconify-icon>
-                    </div>
-                    <div>
-                        <span class="mb-2 fw-medium text-secondary-light text-sm">Personal administrativo</span>
-                        <h6 class="fw-semibold">850</h6>
-                    </div>
-                </div>
-
-                <!-- <div id="leads-chart" class="remove-tooltip-title rounded-tooltip-value"></div> -->
-            </div>
-            <p class="text-sm mb-0">Registrados el dia de hoy</p>
-        </div>
-    </div>
-</div>
-                <div class="col-xxl-4 col-sm-6">
-                    <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-5">
-                        <div class="card-body p-0">
-                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
-
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="mb-0 w-48-px h-48-px bg-pink text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
-                                        <iconify-icon icon="mdi:leads" class="icon"></iconify-icon>
-                                    </span>
-                                    <div>
-                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Personal de limpieza</span>
-                                        <h6 class="fw-semibold">400</h6>
-                                    </div>
-                                </div>
-
-                                <!-- <div id="leads-chart" class="remove-tooltip-title rounded-tooltip-value"></div> -->
-                            </div>
-                            <p class="text-sm mb-0">Registrados el dia de hoy</p>
+                            <p class="text-sm mb-0">Pendiente</p>
+                            <button type="button" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                Pagar
+                            </button>
                         </div>
                     </div>
                 </div>
 
 
-            </div>
         </div>
     
     </div>
@@ -154,6 +116,6 @@
 
 </body>
 
+<footer><%- include('partials/footer') %></footer>
 
-<%- include('partials/footer') %>
 </html>
