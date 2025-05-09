@@ -1,15 +1,35 @@
-<% include('partials/header.ejs') %>
-<h2>Formulario de Pago</h2>
-<form method="POST" action="/pagos/realizar">
-  <select name="servicio_id">
-    <% servicios.forEach(s => { %>
-      <option value="<%= s.id %>"><%= s.nombre %></option>
-    <% }) %>
-  </select>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<%- include('partials/header') %>
+<%- include('components/sidebar') %>
 
-  <input type="number" name="monto" step="0.01" placeholder="Monto" required>
-  <input type="text" name="tarjeta" placeholder="Número de Tarjeta" required>
-  <input type="text" name="cvv" placeholder="CVV" required>
-  <input type="month" name="vencimiento" required>
-  <button type="submit">Pagar</button>
-</form>
+
+<body>
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+  </main>
+  <%- include('components/scripts') %>
+  
+  <h2>Formulario de Pago</h2>
+  <form method="POST" action="/pagos/realizar">
+    <select name="servicio_id">
+      <% servicios.forEach(s => { %>
+        <option value="<%= s.id %>"><%= s.nombre %></option>
+      <% }) %>
+    </select>
+  
+    <input type="number" name="monto" step="0.01" placeholder="Monto" required>
+    <input type="text" name="tarjeta" placeholder="Número de Tarjeta" required>
+    <input type="text" name="cvv" placeholder="CVV" required>
+    <input type="month" name="vencimiento" required>
+    <button type="submit">Pagar</button>
+  </form>
+
+</body>
+</html>
+

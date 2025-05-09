@@ -4,7 +4,16 @@
   <meta charset="UTF-8">
   <title>Vincular Servicio</title>
 </head>
+<%- include('partials/header') %>
+<%- include('components/sidebar') %>
+
+
 <body>
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+  </main>
+  <%- include('components/scripts') %>
+
   <h1>Vincular un Servicio</h1>
   <form action="/api/servicios/vincular" method="POST">
     <label for="servicio_id">Servicio:</label>
@@ -20,4 +29,5 @@
     <button type="submit">Vincular</button>
   </form>
 </body>
+<%- include('partials/footer') %>
 </html>
