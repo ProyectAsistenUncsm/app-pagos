@@ -3,7 +3,7 @@ import express from 'express';
 import {dirname, join} from 'path'
 import { fileURLToPath } from 'url';
 
-import indexRoutes from './routes/indexroutes.js'
+import indexRoutes from './routes/indexRoutes.js'
 
 
 const app = express();
