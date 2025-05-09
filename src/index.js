@@ -10,13 +10,14 @@ const app = express();
 
 //directorio de archivos
 const __dirname = dirname(fileURLToPath(import.meta.url));
-console.log(join(__dirname, 'views/perfil'))
+console.log(join(__dirname, 'views/auth'))
 
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(indexRoutes);
 
 app.use(express.static(join(__dirname, 'publicassets')))
+app.use(express.static(join(__dirname, 'views/auth')))
 
 
 app.listen(process.env.PORT || 3000);
