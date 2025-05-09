@@ -15,6 +15,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(indexRoutes);
+app.use('/auth', indexRoutes);
 
 app.use(express.static(join(__dirname, 'publicassets')))
 
