@@ -1,0 +1,25 @@
+import express from 'express';
+//para directorio de archivos
+import {dirname, join} from 'path'
+import { fileURLToPath } from 'url';
+
+import indexRoutes from './routes/indexroutes.js'
+
+
+const app = express();
+
+//directorio de archivos
+const __dirname = dirname(fileURLToPath(import.meta.url));
+console.log(join(__dirname, 'views/perfil'))
+
+app.set('views', join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(indexRoutes);
+
+app.use(express.static(join(__dirname, 'publicassets')))
+
+
+app.listen(process.env.PORT || 3000);
+console.log('Server is running on port', 3000);
+
+
