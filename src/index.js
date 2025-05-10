@@ -4,8 +4,8 @@ import { fileURLToPath } from 'url';
 
 
 import indexRoutes from './routes/indexRoutes.js';
-import routes_user from './routes/userRoutes.js';
 
+import { User } from './models/indexModel.js'; // Use import here (adjust path if needed)
 
 const app = express();
 
