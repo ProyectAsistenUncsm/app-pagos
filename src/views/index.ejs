@@ -9,9 +9,9 @@
 
 <body>
   <main class="dashboard-main">
-    <nav>
+    <%- include('components/scripts') %>
         <%- include('components/navbar') %>
-    </nav>
+
 
   <div class="dashboard-main-body">
 
@@ -24,8 +24,8 @@
                     Dashboard
                 </a>
             </li>
-            <li>-</li>
-            <li class="fw-medium">General</li>
+            <li>-</li><li class="fw-medium">General</li>
+            
         </ul>
     </div>
     <div class="row gy-4">
@@ -118,6 +118,6 @@
  
 </body>
 
-<%- include('components/scripts') %>
+
 <%- include('partials/footer') %> //prueba
 </html>
