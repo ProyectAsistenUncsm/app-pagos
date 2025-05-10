@@ -1,10 +1,11 @@
 import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-
+import jwt from 'jsonwebtoken';
 
 import indexRoutes from './routes/indexRoutes.js';
-
+import routes_user from './routes/userRoutes.js';
+import { User } from './models/indexModel.js'; // Use import here (adjust path if needed)
 
 const app = express();
 
