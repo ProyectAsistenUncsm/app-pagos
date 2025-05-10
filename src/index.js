@@ -17,7 +17,6 @@ app.use('/auth', indexRoutes);
 
 app.use(express.static(join(__dirname, 'publicassets')));
 
-app.use('/', routes_user);
 
 // Middleware para agregar datos del usuario a las vistas
 app.use(async (req, res, next) => {
