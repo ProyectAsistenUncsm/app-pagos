@@ -40,7 +40,7 @@ body{
 
      }
      .left-box{
-        height: 100px;
+        height: auto;
         overflow: hidden;
      }
      .right-box{
