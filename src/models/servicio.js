@@ -1,10 +1,11 @@
+// models/servicio.js
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
 class Servicio extends Model {}
 
 Servicio.init({
-  nombre: { type: DataTypes.STRING },
+  nombre: { type: DataTypes.STRING, allowNull: false },
   descripcion: { type: DataTypes.TEXT }
 }, {
   sequelize,
@@ -12,4 +13,5 @@ Servicio.init({
 });
 
 module.exports = Servicio;
+
   

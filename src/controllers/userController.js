@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { Usuario, UsuarioServicio } = require('../models');
+const { Usuario, UsuarioServicio, Servicio } = require('../models');
 
 // Registro de usuario
 exports.registrarUsuario = async (req, res) => {
@@ -53,28 +53,33 @@ exports.loginUsuario = async (req, res) => {
     console.error(error);
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
+
+
+res.cookie('token', token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  maxAge: 43200000 // 12 hora
+}).redirect('/perfil'); // o cualquier otra vista
+
 };
 
 // Obtener perfil del usuario
-exports.obtenerPerfil = async (req, res) => {
+// Agrega esta función si usas EJS en lugar de solo APIs JSON
+exports.vistaPerfil = async (req, res) => {
   try {
     const usuarioId = req.usuario.id;
     const usuario = await Usuario.findByPk(usuarioId, {
-      include: [
-        {
-          model: UsuarioServicio,
-          include: ['servicio']
-        }
-      ]
+      include: [{ model: UsuarioServicio, include: ['servicio'] }]
     });
 
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      return res.status(404).send('Usuario no encontrado');
     }
 
-    res.json({ usuario });
+    res.render('perfil', { usuario });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: 'Error al obtener el perfil' });
+    res.status(500).send('Error al cargar el perfil');
   }
 };
+

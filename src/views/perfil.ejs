@@ -40,29 +40,25 @@
                         <h6 class="text-xl mb-16">Información Personal</h6>
                         <ul>
                             <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light"> Año Id</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.id %></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-1 mb-12">
                                 <span class="w-30 text-md fw-semibold text-primary-light">Nombre Completo</span>
-                                <span class="w-70 text-secondary-light fw-medium">: ==========</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.nombre %></span>
                             </li>
                             <li class="d-flex align-items-center gap-1 mb-12">
                                 <span class="w-30 text-md fw-semibold text-primary-light"> Email</span>
-                                <span class="w-70 text-secondary-light fw-medium">: ============</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.correo %></span>
                             </li>
                             <li class="d-flex align-items-center gap-1 mb-12">
                                 <span class="w-30 text-md fw-semibold text-primary-light"> Numero de Telefono</span>
-                                <span class="w-70 text-secondary-light fw-medium">: ============</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.telefono %></span>
                             </li>
-                            <!-- <li class="d-flex align-items-center gap-1 mb-12">
-                                <span class="w-30 text-md fw-semibold text-primary-light"> Carrera</span>
-                                <span class="w-70 text-secondary-light fw-medium">: Diseño Grafico</span>
+                             <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light"> Direccion</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.direccion %></span>
                             </li> 
-                            <li class="d-flex align-items-center gap-1 mb-12">
-                                <span class="w-30 text-md fw-semibold text-primary-light"> Año cursando</span>
-                                <span class="w-70 text-secondary-light fw-medium">: 2024</span>
-                            </li>
-                            <li class="d-flex align-items-center gap-1 mb-12">
-                                <span class="w-30 text-md fw-semibold text-primary-light"> Título de Grado</span>
-                                <span class="w-70 text-secondary-light fw-medium">: Grado</span>
-                            </li>-->
 
                             <!-- <button type="button" class="btn rounded-pill btn-primary-600 radius-8 px-20 py-11">Cambiar foto</button> -->
                         </ul>
@@ -98,8 +94,8 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="mb-20">
-                                            <label for="carrera" class="form-label fw-semibold text-primary-light text-sm mb-8">Carrera <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="carrera" value="Diseño Grafico" disabled>
+                                            <label for="carrera" class="form-label fw-semibold text-primary-light text-sm mb-8">Servicio <span class="text-danger-600"></span></label>
+                                            <input <%= us.Servicio?.nombre || 'N/A' %> >
                                         </div>
                                     </div>
                                     <div class="col-sm-6">

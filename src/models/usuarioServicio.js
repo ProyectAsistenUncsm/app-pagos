@@ -14,3 +14,8 @@ UsuarioServicio.init({
 
 module.exports = UsuarioServicio;
   
+Usuario.hasMany(UsuarioServicio, { foreignKey: 'usuario_id' });
+UsuarioServicio.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+
+// En UsuarioServicio.js:
+UsuarioServicio.belongsTo(Servicio, { foreignKey: 'servicio_id' });

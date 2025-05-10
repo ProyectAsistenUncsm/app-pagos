@@ -10,6 +10,12 @@ router.post('/register', userController.registrarUsuario);
 router.post('/login', userController.loginUsuario);
 
 // Ruta para obtener perfil del usuario (requiere autenticación)
-router.get('/perfil', verificarToken, usuarioController.obtenerPerfil);
+router.get('/vista-perfil', verificarToken, userController.vistaPerfil);
 
 module.exports = router;
+
+
+
+
+
+
