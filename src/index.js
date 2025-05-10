@@ -1,9 +1,8 @@
 import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import jwt from 'jsonwebtoken';
 
-
-import indexRoutes from './routes/indexRoutes.js';
 
 
 const app = express();
