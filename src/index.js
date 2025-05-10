@@ -1,11 +1,9 @@
 import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import jwt from 'jsonwebtoken';
+
 
 import indexRoutes from './routes/indexRoutes.js';
-import routes_user from './routes/userRoutes.js';
-import { User } from './models/indexModel.js'; // Use import here (adjust path if needed)
 
 const app = express();
 
@@ -19,7 +17,7 @@ app.use('/auth', indexRoutes);
 
 app.use(express.static(join(__dirname, 'publicassets')));
 
-
+app.use('/', routes_user);
 
 // Middleware para agregar datos del usuario a las vistas
 app.use(async (req, res, next) => {
