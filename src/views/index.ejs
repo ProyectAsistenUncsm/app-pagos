@@ -6,16 +6,12 @@
 <%- include('partials/header') %>
 <%- include('components/sidebar') %>
 
-
-<body>
-  <main class="dashboard-main">
-    <nav>
+<nav>
     <%- include('components/navbar') %>
 </nav>
+<body>
+  <main class="dashboard-main">
 
-  <%- include('components/scripts') %>
-
-  <script src="/js/homeTwoChart.js"></script>
 
   <div class="dashboard-main-body">
 
@@ -122,5 +118,6 @@
  
 </body>
 
-</html>
+<%- include('components/scripts') %>
 <%- include('partials/footer') %> //prueba
+</html>
