@@ -1,9 +1,9 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../../config/db.js';
 
-class Pago extends Model {}
+class Pay extends Model {}
 
-Pago.init({
+Pay.init({
   monto: { type: DataTypes.DECIMAL(10, 2) },
   fecha_pago: { type: DataTypes.DATE },
   referencia: { type: DataTypes.STRING },
@@ -11,8 +11,8 @@ Pago.init({
   estado: { type: DataTypes.STRING }
 }, {
   sequelize,
-  modelName: 'Pago'
+  modelName: 'Pay'
 });
 
-module.exports = Pago;
+export default Pay;
   

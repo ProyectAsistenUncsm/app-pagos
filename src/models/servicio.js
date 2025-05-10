@@ -1,6 +1,6 @@
 // models/servicio.js
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../../config/db.js';
 
 class Servicio extends Model {}
 
@@ -12,6 +12,6 @@ Servicio.init({
   modelName: 'Servicio'
 });
 
-module.exports = Servicio;
+export default Servicio;
 
   

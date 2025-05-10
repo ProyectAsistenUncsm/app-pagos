@@ -1,9 +1,10 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { Usuario, UsuarioServicio, Servicio } = require('../models');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { UsuarioService } from '../models/indexModel.js';
+import User from '../models/userModel.js'; // Import the default export 'User'
 
 // Registro de usuario
-exports.registrarUsuario = async (req, res) => {
+export const registrarUsuario = async (req, res) => {
   try {
     const { nombre, correo, contrasena, telefono, direccion } = req.body;
 
@@ -12,7 +13,7 @@ exports.registrarUsuario = async (req, res) => {
     const contrasenaEncriptada = await bcrypt.hash(contrasena, salt);
 
     // Crear el usuario
-    const nuevoUsuario = await Usuario.create({
+    const nuevoUser = await User.create({ // Use the imported 'User' class
       nombre,
       correo,
       contrasena: contrasenaEncriptada,
@@ -21,7 +22,7 @@ exports.registrarUsuario = async (req, res) => {
       fecha_registro: new Date()
     });
 
-    res.status(201).json({ mensaje: 'Usuario registrado correctamente', usuario: nuevoUsuario });
+    res.status(201).json({ mensaje: 'Usuario registrado correctamente', usuario: nuevoUser });
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error al registrar el usuario' });
@@ -29,24 +30,24 @@ exports.registrarUsuario = async (req, res) => {
 };
 
 // Iniciar sesión de usuario
-exports.loginUsuario = async (req, res) => {
+export const loginUsuario = async (req, res) => {
   try {
     const { correo, contrasena } = req.body;
 
-    const usuario = await Usuario.findOne({ where: { correo } });
+    const user = await User.findOne({ where: { correo } });
 
-    if (!usuario) {
+    if (!user) {
       return res.status(400).json({ mensaje: 'Usuario no encontrado' });
     }
 
     // Verificar contraseña
-    const esValida = await bcrypt.compare(contrasena, usuario.contrasena);
+    const esValida = await bcrypt.compare(contrasena, User.contrasena);
     if (!esValida) {
       return res.status(400).json({ mensaje: 'Contraseña incorrecta' });
     }
 
     // Generar el token JWT
-    const token = jwt.sign({ id: usuario.id, correo: usuario.correo }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: User.id, correo: User.correo }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.json({ mensaje: 'Inicio de sesión exitoso', token });
   } catch (error) {
@@ -54,22 +55,20 @@ exports.loginUsuario = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al iniciar sesión' });
   }
 
-
-res.cookie('token', token, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  maxAge: 43200000 // 12 hora
-}).redirect('/perfil'); // o cualquier otra vista
-
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 43200000 // 12 hora
+  }).redirect('/perfil'); // o cualquier otra vista
 };
 
 // Obtener perfil del usuario
 // Agrega esta función si usas EJS en lugar de solo APIs JSON
-exports.vistaPerfil = async (req, res) => {
+export const vistaPerfil = async (req, res) => {
   try {
-    const usuarioId = req.usuario.id;
-    const usuario = await Usuario.findByPk(usuarioId, {
-      include: [{ model: UsuarioServicio, include: ['servicio'] }]
+    const usuarioId = req.User.id;
+    const usuario = await User.findByPk(usuarioId, {
+      include: [{ model: UsuarioService, include: ['servicio'] }]
     });
 
     if (!usuario) {

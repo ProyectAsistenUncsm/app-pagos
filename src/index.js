@@ -1,30 +1,25 @@
 import express from 'express';
-//para directorio de archivos
-import {dirname, join} from 'path'
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import jwt from 'jsonwebtoken';
 
-import indexRoutes from './routes/indexRoutes.js'
-const userRoutes = require('./routes/userRoutes');
-
-const { Usuario } = require('./models'); // Ajustá la ruta según la estructura real
-const jwt = require('jsonwebtoken');
+import indexRoutes from './routes/indexRoutes.js';
+import routes_user from './routes/userRoutes.js';
+import { User } from './models/indexModel.js'; // Use import here (adjust path if needed)
 
 const app = express();
 
-//directorio de archivos
+//directory of files
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
 
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(indexRoutes);
 app.use('/auth', indexRoutes);
 
-app.use(express.static(join(__dirname, 'publicassets')))
+app.use(express.static(join(__dirname, 'publicassets')));
 
-app.use('/', userRoutes);
-
-
+app.use('/', routes_user);
 
 // Middleware para agregar datos del usuario a las vistas
 app.use(async (req, res, next) => {
@@ -32,7 +27,7 @@ app.use(async (req, res, next) => {
     const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const usuario = await Usuario.findByPk(decoded.id);
+      const usuario = await User.findByPk(decoded.id);
       if (usuario) {
         res.locals.usuario = usuario; // disponible en EJS como <%= usuario %>
         req.usuario = usuario; // opcional si necesitas usarlo en controladores
@@ -45,7 +40,7 @@ app.use(async (req, res, next) => {
 });
 
 
+
 app.listen(process.env.PORT || 3000);
 console.log('Server is running on port', 3000);
-
 

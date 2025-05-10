@@ -1,28 +1,28 @@
-const sequelize = require('../config/db');
-const { DataTypes } = require('sequelize');
+import sequelize from '../../config/db.js';
 
-const Usuario = require('./userModel');
-const DatosBancarios = require('./datosBancarios');
-const Servicio = require('./servicio');
-const UsuarioServicio = require('./usuarioServicio');
-const Pago = require('./pago');
+import User from './userModel.js';
+import bank_data from './datosBancarios.js';
+import Servicio from './servicio.js';
+import UsuarioService from './usuarioServicio.js';
+import Pay from './pago.js';
 
-Usuario.hasMany(DatosBancarios);
-DatosBancarios.belongsTo(Usuario);
+User.hasMany(bank_data);
+bank_data.belongsTo(User);
 
-Usuario.belongsToMany(Servicio, { through: UsuarioServicio });
-Servicio.belongsToMany(Usuario, { through: UsuarioServicio });
+User.belongsToMany(Servicio, { through: UsuarioService });
+Servicio.belongsToMany(User, { through: UsuarioService });
 
-Usuario.hasMany(Pago);
-Pago.belongsTo(Usuario);
-Servicio.hasMany(Pago);
-Pago.belongsTo(Servicio);
+User.hasMany(Pay);
+Pay.belongsTo(User);
 
-module.exports = {
+Servicio.hasMany(Pay);
+Pay.belongsTo(Servicio);
+
+export {
   sequelize,
-  Usuario,
-  DatosBancarios,
+  User,
+  bank_data,
   Servicio,
-  UsuarioServicio,
-  Pago,
+  UsuarioService,
+  Pay,
 };

@@ -1,18 +1,33 @@
-const express = require('express');
-const router = express.Router();
-const userController = require('../controllers/userController');
-const { verificarToken } = require('../middleware/authMiddleware');
+import { Router } from 'express';
+import { registrarUsuario, loginUsuario, vistaPerfil } from '../controllers/userController.js';
+import { verificarToken } from '../middleware/authMiddleware.js';
+
+const router = Router();
 
 // Ruta de registro
-router.post('/register', userController.registrarUsuario);
+router.post('/register', registrarUsuario);
 
 // Ruta de login
-router.post('/login', userController.loginUsuario);
+router.post('/login', loginUsuario);
 
 // Ruta para obtener perfil del usuario (requiere autenticación)
-router.get('/vista-perfil', verificarToken, userController.vistaPerfil);
+router.get('/vista-perfil', verificarToken, vistaPerfil);
 
-module.exports = router;
+router.get('/perfil', verificarToken, async (req, res) => {
+    try {
+      const usuario = await Usuario.findByPk(req.usuario.id, {
+        include: [{ model: UsuarioServicio, include: ['servicio'] }]
+      });
+  
+      if (!usuario) return res.status(404).send('Usuario no encontrado');
+  
+      res.render('perfil', { usuario }); // Asegúrate de tener perfil.ejs
+    } catch (err) {
+      res.status(500).send('Error al cargar perfil');
+    }
+  });
+  
+export default router;
 
 
 

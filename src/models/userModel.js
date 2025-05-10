@@ -1,10 +1,9 @@
-// models/usuario.js
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../../config/db.js';
 
-class Usuario extends Model {}
+class User extends Model {} // Uppercase 'U'
 
-Usuario.init({
+User.init({
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   nombre: { type: DataTypes.STRING },
   correo: { type: DataTypes.STRING, unique: true },
@@ -14,7 +13,7 @@ Usuario.init({
   fecha_registro: { type: DataTypes.DATE },
 }, {
   sequelize,
-  modelName: 'Usuario'
+  modelName: 'User' // Uppercase 'U' for model name
 });
 
-module.exports = Usuario;
+export default User; // Export the class

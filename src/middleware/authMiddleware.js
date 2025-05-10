@@ -1,7 +1,7 @@
 // middleware/authMiddleware.js
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-exports.verificarToken = (req, res, next) => {
+export const verificarToken = (req, res, next) => { // Use 'export const' for a named ESM export
   const token = req.cookies.token || req.headers['authorization'];
 
   if (!token) {
@@ -16,18 +16,3 @@ exports.verificarToken = (req, res, next) => {
     return res.status(400).send('Token inválido');
   }
 };
-
-router.get('/perfil', verificarToken, async (req, res) => {
-  try {
-    const usuario = await Usuario.findByPk(req.usuario.id, {
-      include: [{ model: UsuarioServicio, include: ['servicio'] }]
-    });
-
-    if (!usuario) return res.status(404).send('Usuario no encontrado');
-
-    res.render('perfil', { usuario }); // Asegúrate de tener perfil.ejs
-  } catch (err) {
-    res.status(500).send('Error al cargar perfil');
-  }
-});
-

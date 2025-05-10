@@ -1,9 +1,9 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../../config/db.js';
 
-class DatosBancarios extends Model {}
+class bank_data extends Model {}
 
-DatosBancarios.init({
+bank_data.init({
   nombre_banco: { type: DataTypes.STRING },
   numero_cuenta: { type: DataTypes.STRING },
   tipo_cuenta: { type: DataTypes.STRING },
@@ -13,8 +13,8 @@ DatosBancarios.init({
   actualizado_en: { type: DataTypes.DATE }
 }, {
   sequelize,
-  modelName: 'DatosBancarios'
+  modelName: 'bank_data'
 });
 
-module.exports = DatosBancarios;
+export default bank_data;
   
