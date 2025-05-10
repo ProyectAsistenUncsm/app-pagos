@@ -2,6 +2,11 @@ import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
+const jwt = require('jsonwebtoken');
+const routes_user = require('./routes/userRoutes.js');
+const { User } = require('./models/indexModel.js'); // Usando require
+
+app.use('/', routes_user);
 
 import indexRoutes from './routes/indexRoutes.js';
 
