@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken';
 import { UsuarioService } from '../models/indexModel.js';
 import User from '../models/userModel.js'; // Import the default export 'User'
 
+
+
 // Registro de usuario
 export const registrarUsuario = async (req, res) => {
   try {
@@ -27,6 +29,9 @@ export const registrarUsuario = async (req, res) => {
     console.error(error);
     res.status(500).json({ mensaje: 'Error al registrar el usuario' });
   }
+
+  const io = req.app.get('io');
+io.emit('nuevoUsuario', { nombre, correo });
 };
 
 // Iniciar sesión de usuario
@@ -82,3 +87,33 @@ export const vistaPerfil = async (req, res) => {
   }
 };
 
+// Actualizar estado de servicio
+exports.actualizarEstadoServicio = async (req, res) => {
+  try {
+    const { usuario_id, servicio_id, nuevoEstado } = req.body;
+
+    const servicio = await UsuarioServicio.findOne({
+      where: { usuario_id, servicio_id }
+    });
+
+    if (!servicio) {
+      return res.status(404).json({ mensaje: 'Servicio no encontrado' });
+    }
+
+    servicio.estado = nuevoEstado;
+    await servicio.save();
+
+    // Emitir evento WebSocket
+    const io = req.app.get('io');
+    io.emit('servicioActualizado', {
+      usuario_id,
+      servicio_id,
+      estado: nuevoEstado
+    });
+
+    res.json({ mensaje: 'Estado actualizado', servicio });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al actualizar el estado' });
+  }
+};
