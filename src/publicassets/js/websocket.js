@@ -21,8 +21,6 @@ socket.on('estadoServicioActualizado', (data) => {
   // location.reload() o modificá el DOM
 });
 
-const socket = io();
-
 // Escuchar evento del servidor
 socket.on('servicioActualizado', (data) => {
   const usuarioLogueadoId = parseInt(document.getElementById('correo').value);
