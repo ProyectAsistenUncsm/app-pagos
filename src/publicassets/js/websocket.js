@@ -1,5 +1,3 @@
-import {io} from 'index.js'
-
 const socket = io();
 
  // Escuchar mensajes
