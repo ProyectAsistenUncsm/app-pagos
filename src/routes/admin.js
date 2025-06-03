@@ -3,7 +3,7 @@ import {Pay} from '../models/Pago';
 
 const router = express.Router();
 // Historial de pagos
-router.get('/admin/', async (req, res) => {
+router.get('/admin', async (req, res) => {
   try {
     const pagos = await Pago.find().sort({ fecha: -1 });
     res.render('historial', { Pay });
