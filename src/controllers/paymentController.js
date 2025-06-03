@@ -2,15 +2,14 @@ const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const { Pago } = require('../models');
 
-module.exports = {
-  realizarPago: async (req, res) => {
+export const realizarPago = async (req, res) => {
     try {
       const { monto, servicio_id, metodo_pago } = req.body;
       const { id: usuario_id } = req.user;
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: monto * 100,
-        currency: 'usd',
+        currency: 'cor',
         payment_method: metodo_pago,
         confirm: true,
       });
@@ -30,6 +29,6 @@ module.exports = {
       res.status(500).json({ error: err.message });
     }
     
-  }
+  
 
 };
