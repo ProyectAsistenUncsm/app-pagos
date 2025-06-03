@@ -17,7 +17,7 @@ const servicioRoutes = require('../routes/servicios');
 // Inicializa la app
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
+//const io = socketIO(server);
 
 // Seguridad y middlewares
 app.use(helmet());
@@ -58,6 +58,7 @@ app.get('/vincular-servicio', (req, res) => {
   res.render('vincular-servicio');
 });
 
+app.use(express.static('src/publicassets'));
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/pagos', pagoRoutes);
@@ -78,3 +79,5 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });
+
+
