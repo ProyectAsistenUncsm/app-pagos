@@ -13,7 +13,7 @@ const authRoutes = require('../routes/authRoutes');
 const pagoRoutes = require('../routes/paymentRoutes');
 const usuarioRoutes = require('../routes/usuarios');
 const servicioRoutes = require('../routes/servicios');
-const adminRoutes = require('./routes/admin');
+const adminRoutes = require('../routes/admin');
 
 // Inicializa la app
 const app = express();
@@ -43,7 +43,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/', adminRoutes);
+
 
 
 // Motor de vistas EJS
@@ -66,6 +66,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/pagos', pagoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/servicios', servicioRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Puerto y arranque
 //const PORT = process.env.PORT || 3000;
