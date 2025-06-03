@@ -1,28 +1,33 @@
 console.clear();
 
-const loginBtn = document.getElementById('login');
-const signupBtn = document.getElementById('signup');
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+	e.preventDefault();
+	
+	const email = document.getElementById('email').value;
+	const contrasena = document.getElementById('password').value;
 
-loginBtn.addEventListener('click', (e) => {
-	let parent = e.target.parentNode.parentNode;
-	Array.from(e.target.parentNode.parentNode.classList).find((element) => {
-		if(element !== "slide-up") {
-			parent.classList.add('slide-up')
-		}else{
-			signupBtn.parentNode.classList.add('slide-up')
-			parent.classList.remove('slide-up')
+	try {
+		const response = await fetch('/api/usuarios/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email, contrasena })
+		});
+
+		const data = await response.json();
+
+		if (response.ok) {
+			// Guardar el token en localStorage
+			localStorage.setItem('token', data.token);
+			// Redirigir al dashboard o página principal
+			window.location.href = '/';
+		} else {
+			alert(data.mensaje || 'Error al iniciar sesión');
 		}
-	});
+	} catch (error) {
+		console.error('Error:', error);
+		alert('Error al iniciar sesión');
+	}
 });
 
-signupBtn.addEventListener('click', (e) => {
-	let parent = e.target.parentNode;
-	Array.from(e.target.parentNode.classList).find((element) => {
-		if(element !== "slide-up") {
-			parent.classList.add('slide-up')
-		}else{
-			loginBtn.parentNode.parentNode.classList.add('slide-up')
-			parent.classList.remove('slide-up')
-		}
-	});
-});
