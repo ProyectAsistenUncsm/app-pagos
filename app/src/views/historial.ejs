@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Historial de Pagos</title>
+</head>
+<body>
+  <h1>Historial de Pagos</h1>
+  <table border="1">
+    <tr>
+      <th>Usuario</th>
+      <th>Monto</th>
+      <th>Fecha</th>
+      <th>Método</th>
+      <th>Estado</th>
+    </tr>
+    <% pagos.forEach(pago => { %>
+      <tr>
+        <td><%= pago.usuario %></td>
+        <td><%= pago.monto %></td>
+        <td><%= pago.fecha.toLocaleDateString() %></td>
+        <td><%= pago.metodo %></td>
+        <td><%= pago.estado %></td>
+      </tr>
+    <% }) %>
+  </table>
+</body>
+</html>
