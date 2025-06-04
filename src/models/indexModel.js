@@ -1,10 +1,10 @@
-import sequelize from '../../config/db.js';
+import { sequelize } from '../../config/db.js';
 
-import User from '../userModel.js';
-import bank_data from '../datosBancarios.js';
-import Servicio from '../servicio.js';
-import UsuarioService from '../usuarioServicio.js';
-import Pay from '../pago.js';
+import User from './userModel.js';
+import bank_data from './datosBancarios.js';
+import Servicio from './servicio.js';
+import UsuarioService from './usuarioServicio.js';
+import Pay from './pago.js';
 
 User.hasMany(bank_data);
 bank_data.belongsTo(User);

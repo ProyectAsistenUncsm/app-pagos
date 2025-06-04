@@ -1,18 +1,21 @@
 import express from 'express';
-import { register, login } from '../controllers/authController.js';
+import { registrarUsuario, loginUsuario, RecoverPassword } from '../controllers/authController.js';
+import { vistaPerfil } from '../controllers/userController.js';
 
 const router = express.Router();
 
+// Rutas de autenticación
 router.get('/register', (req, res) => res.render('register'));
 router.get('/login', (req, res) => res.render('login'));
+router.get('/recover', (req, res) => res.render('recover'));
 
-router.post('/register', register);
-router.post('/login', login);
+router.get('/profile', vistaPerfil);
 
-router.get('/vincular-service', (req, res) => res.render('vincular-service'));
-router.post('/vincular-service', vincularService);
+// Endpoints de la API
+router.post('/register', registrarUsuario);
+router.post('/login', loginUsuario);
 
-router.post('/recover', (req, res) => res.render('reconver'));
-router.post('/recover', recover);
+
+router.post('/recover', RecoverPassword);
 
 export default router;

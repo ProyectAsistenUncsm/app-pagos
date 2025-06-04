@@ -24,7 +24,7 @@ socket.on('estadoServicioActualizado', (data) => {
 
 // Escuchar evento del servidor
 socket.on('servicioActualizado', (data) => {
-  const usuarioLogueadoId = parseInt(document.getElementById('email').value);
+  const usuarioLogueadoId = parseInt(document.getElementById('correo').value);
 
   if (data.usuario_id === usuarioLogueadoId) {
     alert(`Tu servicio ha cambiado de estado a: ${data.estado}`);

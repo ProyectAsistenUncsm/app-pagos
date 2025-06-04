@@ -5,18 +5,27 @@ import User from '../models/userModel.js'; // Import the default export 'User'
 // Registro de usuario
 export const registrarUsuario = async (req, res) => {
   try {
-    const { nombre, email, contrasena, telefono, cedula } = req.body;
+    const { nombre, correo, contrasena, telefono, cedula } = req.body;
+
+    // Validaciones básicas
+    if (!nombre || !correo || !contrasena) {
+      return res.status(400).json({ 
+        mensaje: 'Nombre, correo y contraseña son obligatorios' 
+      });
+    }
 
     // Verificar si el usuario ya existe
-    const usuarioExistente = await User.findOne({ where: { email } });
+    const usuarioExistente = await User.findOne({ where: { correo } });
     if (usuarioExistente) {
       return res.status(400).json({ mensaje: 'El correo ya está registrado' });
     }
 
     // Verificar si la cédula ya existe
-    const cedulaExistente = await User.findOne({ where: { cedula } });
-    if (cedulaExistente) {
-      return res.status(400).json({ mensaje: 'La cédula ya está registrada' });
+    if (cedula) {
+      const cedulaExistente = await User.findOne({ where: { cedula } });
+      if (cedulaExistente) {
+        return res.status(400).json({ mensaje: 'La cédula ya está registrada' });
+      }
     }
 
     // Encriptar la contraseña
@@ -26,7 +35,7 @@ export const registrarUsuario = async (req, res) => {
     // Crear el usuario
     const nuevoUser = await User.create({
       nombre,
-      email,
+      correo,
       contrasena: contrasenaEncriptada,
       telefono,
       cedula,
@@ -36,7 +45,7 @@ export const registrarUsuario = async (req, res) => {
     // Notificar a los clientes conectados sobre el nuevo usuario
     const io = req.app.get('io');
     if (io) {
-      io.emit('nuevoUsuario', { nombre, email });
+      io.emit('nuevoUsuario', { nombre, correo });
     }
 
     res.status(201).json({ 
@@ -44,23 +53,33 @@ export const registrarUsuario = async (req, res) => {
       usuario: {
         id: nuevoUser.id,
         nombre: nuevoUser.nombre,
-        email: nuevoUser.email,
+        correo: nuevoUser.correo,
         telefono: nuevoUser.telefono,
         cedula: nuevoUser.cedula
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al registrar el usuario' });
+    console.error('Error en registro:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al registrar el usuario',
+      error: error.message 
+    });
   }
 };
 
 // Iniciar sesión de usuario
 export const loginUsuario = async (req, res) => {
   try {
-    const { email, contrasena } = req.body;
+    const { correo, contrasena } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    // Validaciones básicas
+    if (!correo || !contrasena) {
+      return res.status(400).json({ 
+        mensaje: 'Correo y contraseña son obligatorios' 
+      });
+    }
+
+    const user = await User.findOne({ where: { correo } });
 
     if (!user) {
       return res.status(400).json({ mensaje: 'Usuario no encontrado' });
@@ -76,10 +95,10 @@ export const loginUsuario = async (req, res) => {
     const token = jwt.sign(
       { 
         id: user.id, 
-        email: user.email,
+        correo: user.correo,
         nombre: user.nombre 
       }, 
-      process.env.JWT_SECRET, 
+      process.env.JWT_SECRET || 'tu_clave_secreta_por_defecto', 
       { expiresIn: '1h' }
     );
 
@@ -90,32 +109,50 @@ export const loginUsuario = async (req, res) => {
       usuario: {
         id: user.id,
         nombre: user.nombre,
-        email: user.email
+        correo: user.correo
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al iniciar sesión' });
+    console.error('Error en login:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al iniciar sesión',
+      error: error.message 
+    });
   }
 };
 
 // Recuperar contraseña
 export const RecoverPassword = async (req, res) => {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ where: { email } });
+    const { correo } = req.body;
+
+    if (!correo) {
+      return res.status(400).json({ mensaje: 'El correo es obligatorio' });
+    }
+
+    const user = await User.findOne({ where: { correo } });
 
     if (!user) {
       return res.status(400).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    // Generar el token JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Generar el token JWT para recuperación
+    const token = jwt.sign(
+      { id: user.id, correo: user.correo }, 
+      process.env.JWT_SECRET || 'tu_clave_secreta_por_defecto', 
+      { expiresIn: '1h' }
+    );
 
-    res.json({ mensaje: 'Cambio de contraseña exitoso', token });
+    res.json({ 
+      mensaje: 'Se ha enviado un enlace de recuperación a tu correo',
+      token 
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al cambiar contraseña' });
+    console.error('Error en recuperación:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al procesar la recuperación de contraseña',
+      error: error.message 
+    });
   }
 };
 

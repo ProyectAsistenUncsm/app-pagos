@@ -6,24 +6,71 @@ import User from '../models/userModel.js'; // Import the default export 'User'
 // Agrega esta función si usas EJS en lugar de solo APIs JSON
 export const vistaPerfil = async (req, res) => {
   try {
-    const usuarioId = req.User.id;
-    const usuario = await User.findByPk(usuarioId, {
-      include: [{ model: UsuarioService, include: ['servicio'] }]
-    });
+    const usuarioId = req.user.id;
+    const usuario = await User.findByPk(usuarioId);
 
     if (!usuario) {
-      return res.status(404).send('Usuario no encontrado');
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    res.render('perfil', { usuario });
+    res.render('perfil', { 
+      usuario: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        telefono: usuario.telefono,
+        cedula: usuario.cedula,
+        fecha_registro: usuario.fecha_registro
+      }
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al cargar el perfil');
+    console.error('Error al cargar perfil:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al cargar el perfil',
+      error: error.message 
+    });
+  }
+};
+
+// Actualizar perfil de usuario
+export const actualizarPerfil = async (req, res) => {
+  try {
+    const usuarioId = req.user.id;
+    const { nombre, telefono, cedula } = req.body;
+
+    const usuario = await User.findByPk(usuarioId);
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    // Actualizar campos
+    if (nombre) usuario.nombre = nombre;
+    if (telefono) usuario.telefono = telefono;
+    if (cedula) usuario.cedula = cedula;
+
+    await usuario.save();
+
+    res.json({ 
+      mensaje: 'Perfil actualizado correctamente',
+      usuario: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        telefono: usuario.telefono,
+        cedula: usuario.cedula
+      }
+    });
+  } catch (error) {
+    console.error('Error al actualizar perfil:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al actualizar el perfil',
+      error: error.message 
+    });
   }
 };
 
 // Actualizar estado de servicio
-exports.actualizarEstadoServicio = async (req, res) => {
+export const actualizarEstadoServicio = async (req, res) => {
   try {
     const { usuario_id, servicio_id, nuevoEstado } = req.body;
 
