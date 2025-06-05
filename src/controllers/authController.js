@@ -103,6 +103,13 @@ export const loginUsuario = async (req, res) => {
     );
 
     // Enviar respuesta con el token
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Solo en producción
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 1000 // 1 hora
+    });
+
     res.json({ 
       mensaje: 'Inicio de sesión exitoso',
       token,

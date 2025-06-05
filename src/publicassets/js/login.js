@@ -24,13 +24,14 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (response.ok) {
 					console.log('Login exitoso');
 					// Guardar el token en localStorage
-					localStorage.setItem('token', data.token);
-					// Guardar información del usuario
-					localStorage.setItem('user', JSON.stringify(data.usuario));
-					// Redirigir a la página principal
-					setTimeout(() => {
-						window.location.href = '/';
-					}, 100);
+                    //localStorage.setItem('token', data.token);
+                    // Guardar información del usuario
+                   // localStorage.setItem('user', JSON.stringify(data.usuario));
+                    // Redirigir a la página principal
+                    //setTimeout(() => {
+                       // window.location.href = '/';
+                    //}, 100);
+					window.location.href = '/';
 				} else {
 					alert(data.mensaje || 'Error al iniciar sesión');
 				}
