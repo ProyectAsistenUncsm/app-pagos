@@ -1,5 +1,4 @@
 node_modules/
 .env
-config/db.js
 test/db-test.js
 Procfile
