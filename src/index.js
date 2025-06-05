@@ -1,32 +1,26 @@
 import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-
-
-
-import authRoutes from './routes/authRoutes.js';
-import indexRoutes from './routes/indexRoutes.js';
-import { User } from './models/indexModel.js';
-
-
+//import authRoutes from './routes/authRoutes.js';
+//import indexRoutes from './routes/indexRoutes.js';
+//import { User } from './models/indexModel.js';
 // const jwt = require('jsonwebtoken');
 //const routes_user = require('./routes/userRoutes.js');
 //const { User } = require('./models/indexModel.js'); // Usando require
 
 //app.use('/', routes_user);
 
-//directory of files
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import indexRoutes from './routes/indexRoutes.js';
 
 const app = express();
 
-// Configuración de vistas
+//directory of files
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-// Rutas
---app.use('/', indexRoutes);
---app.use('/auth', authRoutes);
+app.use(indexRoutes);
+app.use('/auth', indexRoutes);
 
 app.use(express.static(join(__dirname, 'publicassets')));
 
@@ -49,15 +43,8 @@ app.use(async (req, res, next) => {
   next();
 });
 
---// Manejo de errores 404
-app.use((req, res) => {
-  res.status(404).render('404', { 
-    mensaje: 'Página no encontrada',
-    usuario: req.user 
-  });
-});
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+
+app.listen(process.env.PORT || 3000);
+console.log('Server is running on port', 3000);
 
