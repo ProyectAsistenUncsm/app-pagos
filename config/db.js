@@ -1,39 +1,38 @@
-// config/config.js
-require('dotenv').config();
-const { Pool } = require('pg');
-const { Sequelize } = require('sequelize');
-require('dotenv').config();
+// config/db.js
+import dotenv from 'dotenv';
+import pg from 'pg';
+import { Sequelize } from 'sequelize';
 
-const sequelize = process.env.DATABASE_URL
-  ? new Sequelize(process.env.DATABASE_URL, {
-      dialect: 'postgres',
-      protocol: 'postgres',
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
-      },
-    })
-  : new Sequelize(
-      process.env.DB_NAME,
-      process.env.DB_USER,
-      process.env.DB_PASSWORD,
-      {
-        host: process.env.DB_HOST,
-        dialect: 'postgres',
+dotenv.config();
+
+const { Pool } = pg;
+
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
       }
-    );
-
-
+    }
+  }
+);
 
 const pool = new Pool({
-  user: 'ud865a5kr8rtup',
-  host: 'c7s7ncbk19n97r.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',
-  database: 'd50v2epjkqmf9q',
-  password: 'd50v2epjkqmf9q',
-  port: 5432
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT || 5432,
+  ssl: {
+    require: true,
+    rejectUnauthorized: false
+  }
 });
 
-export default pool;
-export default sequelize;
+export { sequelize, pool };
