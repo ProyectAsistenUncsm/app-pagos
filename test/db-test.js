@@ -1,4 +1,4 @@
-import { sequelize } from '../config/db.js';
+import  sequelize  from '../config/db.js';
 import Usuario from '../models/Usuario.js';
 
 async function testConnection() {

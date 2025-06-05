@@ -1,4 +1,4 @@
-import { sequelize } from '../config/db.js';
+import  sequelize  from '../config/db.js';
 import User from './models/userModel.js';
 import bank_data from './models/datosBancarios.js';
 import Servicio from './models/servicio.js';
