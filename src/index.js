@@ -10,7 +10,7 @@ import { User } from './models/indexModel.js';
 
 //app.use('/', routes_user);
 
-import indexRoutes from './routes/indexRoutes.js';
+//import indexRoutes from './routes/indexRoutes.js';
 
 const app = express();
 
