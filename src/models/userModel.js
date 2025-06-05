@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../../config/db.js';
+import  sequelize  from '../../config/db.js';
 
 class User extends Model {} // Uppercase 'U'
 
