@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 //import authRoutes from './routes/authRoutes.js';
 //import indexRoutes from './routes/indexRoutes.js';
-import { User } from './models/indexModel.js';
+//import { User } from './models/indexModel.js';
 // const jwt = require('jsonwebtoken');
 //const routes_user = require('./routes/userRoutes.js');
 //const { User } = require('./models/indexModel.js'); // Usando require
