@@ -2,8 +2,7 @@ import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
-import jwt from 'jsonwebtoken';
-import cookieParser from 'cookie-parser';
+
 
 import authRoutes from './routes/authRoutes.js';
 import indexRoutes from './routes/indexRoutes.js';
@@ -16,16 +15,18 @@ import { User } from './models/indexModel.js';
 
 //app.use('/', routes_user);
 
-
-const app = express();
-
 //directory of files
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const app = express();
+
+// Configuración de vistas
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.use(indexRoutes);
-app.use('/auth', indexRoutes);
+
+// Rutas
+--app.use('/', indexRoutes);
+--app.use('/auth', authRoutes);
 
 app.use(express.static(join(__dirname, 'publicassets')));
 
@@ -48,8 +49,15 @@ app.use(async (req, res, next) => {
   next();
 });
 
+--// Manejo de errores 404
+app.use((req, res) => {
+  res.status(404).render('404', { 
+    mensaje: 'Página no encontrada',
+    usuario: req.user 
+  });
+});
 
-
-app.listen(process.env.PORT || 3000);
-console.log('Server is running on port', 3000);
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
 
