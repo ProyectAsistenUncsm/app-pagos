@@ -37,4 +37,3 @@ const pool = new Pool({
 
 module.exports = pool;
 module.exports = sequelize;
-export default sequelize;
