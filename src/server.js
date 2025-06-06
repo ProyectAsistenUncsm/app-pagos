@@ -8,7 +8,7 @@ const db = require('../models');
 
 // Rutas
 const authRoutes = require('../routes/authRoutes');
-const pagoRoutes = require('../routes/paymentRoutes');
+const paymentRoutes = require('../routes/paymentRoutes');
 const usuarioRoutes = require('../routes/usuarios');
 const servicioRoutes = require('../routes/servicios');
 const adminRoutes = require('../routes/admin');
@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'src/publicassets')));
 app.use(express.static('src/publicassets'));
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/pagos', pagoRoutes);
+app.use('/api/pagos', paymentRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/servicios', servicioRoutes);
 app.use('/api/admin', adminRoutes);

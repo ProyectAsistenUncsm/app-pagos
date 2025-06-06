@@ -1,5 +1,8 @@
 import { Model, DataTypes } from 'sequelize';
 import  { sequelize }  from '../../config/db.js';
+import UsuarioService from './UsuarioService.js';
+import Factura from './Factura.js';
+import Pago from './pago.js';
 
 class User extends Model {} // Uppercase 'U'
 
@@ -47,5 +50,10 @@ User.init({
   tableName: 'usuarios',
   timestamps: false
 });
+
+// Relaciones de User
+User.hasMany(UsuarioService, { foreignKey: 'user_id' });
+User.hasMany(Factura, { foreignKey: 'usuario_id' });
+User.hasMany(Pago, { foreignKey: 'user_id' });
 
 export default User; // Export the class

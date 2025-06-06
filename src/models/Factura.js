@@ -1,15 +1,15 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../config/db.js';
 
-class Pago extends Model {}
+class Factura extends Model {}
 
-Pago.init({
+Factura.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    user_id: {
+    usuario_id: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
@@ -21,23 +21,18 @@ Pago.init({
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
-    fecha_pago: {
+    fecha_emision: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
-    referencia: {
-        type: DataTypes.STRING(100),
         allowNull: false
     },
-    metodo_pago: {
-        type: DataTypes.STRING(30),
+    fecha_vencimiento: {
+        type: DataTypes.DATE,
         allowNull: false
     },
     estado: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'completado'
+        defaultValue: 'pendiente'
     },
     createdAt: {
         type: DataTypes.DATE
@@ -47,9 +42,9 @@ Pago.init({
     }
 }, {
     sequelize,
-    modelName: 'Pago',
-    tableName: 'pays',
+    modelName: 'Factura',
+    tableName: 'facturas',
     timestamps: true
 });
 
-export default Pago;
+export default Factura; 

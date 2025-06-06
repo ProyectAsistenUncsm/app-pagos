@@ -1,9 +1,9 @@
 import { sequelize } from '../config/db.js';
 import User from './models/userModel.js';
 import bank_data from './models/datosBancarios.js';
-import Servicio from './models/servicio.js';
-import UsuarioService from './models/usuarioServicio.js';
-import Pay from './models/pago.js';
+import PayService from './models/PayService.js';
+import UsuarioService from './models/UsuarioService.js';
+import Pago from './models/pago.js';
 
 async function syncModels() {
   try {

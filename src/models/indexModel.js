@@ -1,28 +1,20 @@
 import { sequelize } from '../../config/db.js';
-
 import User from './userModel.js';
-import bank_data from './datosBancarios.js';
-import Servicio from './servicio.js';
-import UsuarioService from './usuarioServicio.js';
-import Pay from './pago.js';
+import PayService from './PayService.js';
+import PayServicesData from './PayServicesData.js';
+import UsuarioService from './UsuarioService.js';
+import Factura from './Factura.js';
+import Pago from './pago.js';
 
-User.hasMany(bank_data);
-bank_data.belongsTo(User);
-
-User.belongsToMany(Servicio, { through: UsuarioService });
-Servicio.belongsToMany(User, { through: UsuarioService });
-
-User.hasMany(Pay);
-Pay.belongsTo(User);
-
-Servicio.hasMany(Pay);
-Pay.belongsTo(Servicio);
+// Importar las asociaciones
+import './associations.js';
 
 export {
-  sequelize,
-  User,
-  bank_data,
-  Servicio,
-  UsuarioService,
-  Pay,
+    sequelize,
+    User,
+    PayService,
+    PayServicesData,
+    UsuarioService,
+    Factura,
+    Pago
 };

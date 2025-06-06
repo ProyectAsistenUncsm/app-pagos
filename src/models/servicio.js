@@ -1,10 +1,10 @@
-// models/servicio.js
+// models/service.js
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../config/db.js';
 
 class Servicio extends Model {}
 
-Servicio.init({
+service.init({
   nombre: { type: DataTypes.STRING, allowNull: false },
   descripcion: { type: DataTypes.TEXT }
 }, {

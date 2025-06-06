@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../config/db.js';
 import User from './userModel.js';
-import Servicio from './servicio.js';
+import service from './service.js';
 
 
 class UsuarioService extends Model {}
@@ -20,5 +20,5 @@ export default UsuarioService;
 User.hasMany(UsuarioService, { foreignKey: 'usuario_id' });
 UsuarioService.belongsTo(User, { foreignKey: 'usuario_id' });
 
-// En UsuarioServicio.js:
-UsuarioService.belongsTo(Servicio, { foreignKey: 'servicio_id' });
+// En Usuarioservice.js:
+UsuarioService.belongsTo(Servicio, { foreignKey: 'service_id' });

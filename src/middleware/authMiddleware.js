@@ -1,25 +1,36 @@
 // middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
+import User from '../models/userModel.js';
 
-export const verificarToken = (req, res, next) => {
+export const verificarToken = async (req, res, next) => {
   try {
-    // Intentar obtener el token de las cookies primero
-    let token = req.cookies?.token;
-    
-    // Si no está en las cookies, intentar obtenerlo del header Authorization
-    if (!token && req.headers.authorization) {
-      token = req.headers.authorization.split(' ')[1];
-    }
+    const token = req.cookies.token;
 
     if (!token) {
-      return res.status(401).json({ mensaje: 'No hay sesión activa' });
+      return res.redirect('/auth/login');
     }
 
-    const verificado = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_key');
-    req.user = verificado;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const usuario = await User.findByPk(decoded.id);
+
+    if (!usuario) {
+      return res.redirect('/auth/login');
+    }
+
+    // Asegurarse de que el usuario tenga todos los datos necesarios
+    req.user = {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      correo: usuario.correo,
+      telefono: usuario.telefono,
+      cedula: usuario.cedula,
+      image_profile: usuario.image_profile
+    };
+
     next();
   } catch (error) {
-    console.error('Error en verificación de token:', error);
-    return res.status(401).json({ mensaje: 'Sesión inválida o expirada' });
+    console.error('Error en verificarToken:', error);
+    res.clearCookie('token');
+    return res.redirect('/auth/login');
   }
 };

@@ -1,27 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Historial de Pagos</title>
+    <meta charset="UTF-8">
+    <title>Historial de Pagos</title>
+    <%- include('partials/header') %>
+    <%- include('components/sidebar') %>
 </head>
 <body>
-  <h1>Historial de Pagos</h1>
-  <table border="1">
-    <tr>
-      <th>Usuario</th>
-      <th>Monto</th>
-      <th>Fecha</th>
-      <th>Método</th>
-      <th>Estado</th>
-    </tr>
-    <!--< pagos.forEach(pago => { %>
-      <tr>
-        <td><= pago.usuario %></td>
-        <td><= pago.monto %></td>
-        <td><= pago.fecha.toLocaleDateString() %></td>
-        <td><= pago.metodo %></td>
-        <td><= pago.estado %></td> 
-      </tr>
-    < }) %> -->
-  </table>
+    <main class="dashboard-main">
+        <%- include('components/navbar') %>
+        <%- include('components/scripts') %>
+
+        <div class="dashboard-main-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+                <h6 class="fw-semibold mb-0">Historial de Pagos</h6>
+                <ul class="d-flex align-items-center gap-2">
+                    <li class="fw-medium">
+                        <a href="/" class="d-flex align-items-center gap-1 hover-text-primary">
+                            <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>-</li>
+                    <li class="fw-medium">Historial de Pagos</li>
+                </ul>
+            </div>
+
+            <div class="row">
+                <% pagos.forEach(pago => { %>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 p-0 radius-12 overflow-hidden">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Pago #<%= pago.numero_transaccion %></h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6 class="text-muted">Servicio</h6>
+                                    <p class="fw-semibold"><%= pago.PayService.nombre %></p>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="text-muted">Monto</h6>
+                                    <p class="fw-semibold">$<%= pago.monto %></p>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="text-muted">Fecha</h6>
+                                    <p><%= pago.fecha_pago.toLocaleDateString() %></p>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="text-muted">Método de Pago</h6>
+                                    <p><%= pago.metodo_pago %></p>
+                                </div>
+                                <div class="mb-3">
+                                    <h6 class="text-muted">Estado</h6>
+                                    <span class="badge bg-<%= pago.estado === 'completado' ? 'success' : pago.estado === 'pendiente' ? 'warning' : 'danger' %>">
+                                        <%= pago.estado %>
+                                    </span>
+                                </div>
+                                <% if (pago.PayService.data) { %>
+                                    <div class="mb-3">
+                                        <h6 class="text-muted">Datos Adicionales</h6>
+                                        <p><%= pago.PayService.data.descripcion %></p>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

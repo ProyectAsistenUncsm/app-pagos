@@ -1,9 +1,9 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../config/db.js';
 
-class Pago extends Model {}
+class UsuarioService extends Model {}
 
-Pago.init({
+UsuarioService.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -17,27 +17,21 @@ Pago.init({
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    numero_cuenta: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
+    estado: {
+        type: DataTypes.ENUM('pendiente', 'pagado', 'vencido'),
+        defaultValue: 'pendiente'
+    },
     monto: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
-    fecha_pago: {
+    fecha_vencimiento: {
         type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
-    referencia: {
-        type: DataTypes.STRING(100),
         allowNull: false
-    },
-    metodo_pago: {
-        type: DataTypes.STRING(30),
-        allowNull: false
-    },
-    estado: {
-        type: DataTypes.STRING(20),
-        allowNull: false,
-        defaultValue: 'completado'
     },
     createdAt: {
         type: DataTypes.DATE
@@ -47,9 +41,9 @@ Pago.init({
     }
 }, {
     sequelize,
-    modelName: 'Pago',
-    tableName: 'pays',
+    modelName: 'UsuarioService',
+    tableName: 'usuario_services',
     timestamps: true
 });
 
-export default Pago;
+export default UsuarioService; 

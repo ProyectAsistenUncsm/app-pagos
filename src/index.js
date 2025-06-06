@@ -10,6 +10,7 @@ import indexRoutes from './routes/indexRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import { User } from './models/indexModel.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 import dotenv from 'dotenv';
 
 
@@ -71,7 +72,9 @@ io.on('connection', (socket) => {
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/service', serviceRoutes);
-app.use('/', indexRoutes);
+app.use('/pay', paymentRoutes);
+app.use('/', indexRoutes);{
+}
 
 // 404 - Página no encontrada
 app.use((req, res) => {

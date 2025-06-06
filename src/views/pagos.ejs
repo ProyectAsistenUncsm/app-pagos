@@ -1,35 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <title>Pago de Factura</title>
+    <%- include('partials/header') %>
+    <%- include('components/sidebar') %>
 </head>
-<%- include('partials/header') %>
-<%- include('components/sidebar') %>
-
-
 <body>
-  <main class="dashboard-main">
-    <%- include('components/navbar') %>
-  </main>
-  <%- include('components/scripts') %>
-  
-  <h2>Formulario de Pago</h2>
-  <form method="POST" action="/pagos/realizar">
-    <select name="servicio_id">
-      <% servicios.forEach(s => { %>
-        <option value="<%= s.id %>"><%= s.nombre %></option>
-      <% }) %>
-    </select>
-  
-    <input type="number" name="monto" step="0.01" placeholder="Monto" required>
-    <input type="text" name="tarjeta" placeholder="Número de Tarjeta" required>
-    <input type="text" name="cvv" placeholder="CVV" required>
-    <input type="month" name="vencimiento" required>
-    <button type="submit">Pagar</button>
-  <>
+    <main class="dashboard-main">
+        <%- include('components/navbar') %>
+        <%- include('components/scripts') %>
 
+        <div class="dashboard-main-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+                <h6 class="fw-semibold mb-0">Pago de Servicio</h6>
+                <ul class="d-flex align-items-center gap-2">
+                    <li class="fw-medium">
+                        <a href="/" class="d-flex align-items-center gap-1 hover-text-primary">
+                            <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>-</li>
+                    <li class="fw-medium">Pago de Servicio</li>
+                </ul>
+            </div>
+
+            <div class="row">
+                <!-- Detalles de la Factura -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 p-0 radius-12 overflow-hidden">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Detalles de la Factura</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="text-muted">Servicio</h6>
+                                <p class="fw-semibold"><%= factura.PayService.nombre %></p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted">Descripción</h6>
+                                <p><%= factura.PayService.descripcion %></p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted">Datos Adicionales</h6>
+                                <p><%= factura.PayService.data ? factura.PayService.data.descripcion : 'No hay datos adicionales' %></p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted">Número de Cuenta</h6>
+                                <p><%= factura.numero_cuenta %></p>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted">Estado</h6>
+                                <span class="badge bg-warning">Pendiente</span>
+                            </div>
+                            <div class="mb-3">
+                                <h6 class="text-muted">Monto a Pagar</h6>
+                                <p class="fw-semibold">$<%= factura.monto %></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Pago -->
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 p-0 radius-12 overflow-hidden">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Datos de Pago</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="formPago" class="needs-validation" novalidate>
+                                <input type="hidden" name="pay_service_id" value="<%= factura.pay_service_id %>">
+                                <input type="hidden" name="monto" value="<%= factura.monto %>">
+                                
+                                <!-- Datos de la Tarjeta -->
+                                <div class="mb-3">
+                                    <label class="form-label">Número de Tarjeta</label>
+                                    <input type="text" class="form-control" name="numero_tarjeta" required 
+                                           pattern="[0-9]{16}" placeholder="1234 5678 9012 3456"
+                                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 16)">
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Fecha de Vencimiento</label>
+                                        <input type="text" class="form-control" name="vencimiento" required 
+                                               pattern="(0[1-9]|1[0-2])\/([0-9]{2})" placeholder="MM/YY"
+                                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4).replace(/(\d{2})(\d{0,2})/, '$1/$2')">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">CVV</label>
+                                        <input type="text" class="form-control" name="cvv" required 
+                                               pattern="[0-9]{3,4}" placeholder="123"
+                                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre en la Tarjeta</label>
+                                    <input type="text" class="form-control" name="nombre_tarjeta" required
+                                           oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        Realizar Pago
+                                    </button>
+                                    <a href="/" class="btn btn-outline-secondary">
+                                        Cancelar
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('formPago').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const datos = Object.fromEntries(formData.entries());
+
+            // Preparar datos bancarios
+            const datos_bancarios = {
+                numero_tarjeta: datos.numero_tarjeta,
+                vencimiento: datos.vencimiento,
+                cvv: datos.cvv,
+                nombre_tarjeta: datos.nombre_tarjeta
+            };
+
+            try {
+                const response = await fetch('/pay/realizar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pay_service_id: datos.pay_service_id,
+                        monto: datos.monto,
+                        datos_bancarios
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Mostrar notificación de éxito
+                    mostrarNotificacion(
+                        'Pago Exitoso',
+                        'Tu pago ha sido procesado correctamente',
+                        'success'
+                    );
+                    
+                    // Redirigir al dashboard después de 2 segundos
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    throw new Error(data.mensaje || 'Error al procesar el pago');
+                }
+            } catch (error) {
+                mostrarNotificacion(
+                    'Error en el Pago',
+                    error.message,
+                    'error'
+                );
+            }
+        });
+
+        // Función para mostrar notificaciones
+        function mostrarNotificacion(titulo, mensaje, tipo) {
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${tipo === 'success' ? 'success' : 'danger'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>${titulo}</strong><br>
+                        ${mensaje}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+    </script>
 </body>
 </html>
 

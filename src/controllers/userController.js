@@ -24,23 +24,18 @@ export const vistaPerfil = async (req, res) => {
         })
       : 'No especificada';
 
-    // Convertir la imagen a base64 si existe
-    let imageProfile = null;
-    if (usuario.image_profile) {
-      imageProfile = usuario.image_profile;
-    }
+    // Asegurarse de que la imagen del perfil se pase correctamente
+    const usuarioData = {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      correo: usuario.correo,
+      telefono: usuario.telefono || 'No especificado',
+      cedula: usuario.cedula || 'No especificada',
+      fecha_registro: fechaRegistro,
+      image_profile: usuario.image_profile
+    };
 
-    res.render('perfil', { 
-      usuario: {
-        id: usuario.id,
-        nombre: usuario.nombre,
-        correo: usuario.correo,
-        telefono: usuario.telefono || 'No especificado',
-        cedula: usuario.cedula || 'No especificada',
-        fecha_registro: fechaRegistro,
-        image_profile: imageProfile
-      }
-    });
+    res.render('perfil', { usuario: usuarioData });
   } catch (error) {
     console.error('Error al cargar perfil:', error);
     res.status(500).render('error', { 
@@ -174,24 +169,24 @@ export const cambiarContrasena = async (req, res) => {
 // Actualizar estado de servicio
 export const actualizarEstadoServicio = async (req, res) => {
   try {
-    const { usuario_id, servicio_id, nuevoEstado } = req.body;
+    const { usuario_id, service_id, nuevoEstado } = req.body;
 
-    const servicio = await UsuarioServicio.findOne({
-      where: { usuario_id, servicio_id }
+    const servicio = await Usuarioservice.findOne({
+      where: { usuario_id, service_id }
     });
 
     if (!servicio) {
       return res.status(404).json({ mensaje: 'Servicio no encontrado' });
     }
 
-    servicio.estado = nuevoEstado;
-    await servicio.save();
+    service.estado = nuevoEstado;
+    await service.save();
 
     // Emitir evento WebSocket
     const io = req.app.get('io');
     io.emit('servicioActualizado', {
       usuario_id,
-      servicio_id,
+      service_id,
       estado: nuevoEstado
     });
 

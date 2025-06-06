@@ -1,8 +1,16 @@
-const express = require('express');
-const router = express.Router();
-const { realizarPago } = require('../controllers/paymentController');
-const auth = require('../middleware/authMiddleware');
+import { Router } from 'express';
+import { obtenerFacturasPendientes, cargarPaginaPago, realizarPago } from '../controllers/paymentController.js';
+import { verificarToken } from '../middleware/authMiddleware.js';
 
-router.post('/realizar', auth, realizarPago);
+const router = Router();
 
-module.exports = router;
+// Obtener facturas pendientes
+router.get('/pendientes', verificarToken, obtenerFacturasPendientes);
+
+// Cargar página de pago
+router.get('/:pay_service_id', verificarToken, cargarPaginaPago);
+
+// Realizar pago
+router.post('/realizar', verificarToken, realizarPago);
+
+export default router;
