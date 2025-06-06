@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificaciones</title>
+  <%- include('partials/header') %>
+  <%- include('components/sidebar') %>
+</head>
+<body>
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+
+        <div class="dashboard-main-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+                <h6 class="fw-semibold mb-0">Notificaciones</h6>
+                <ul class="d-flex align-items-center gap-2">
+                    <li class="fw-medium">
+                        <a href="/" class="d-flex align-items-center gap-1 hover-text-primary">
+                            <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>-</li>
+                    <li class="fw-medium">Notificaciones</li>
+                </ul>
+            </div>
+
+            <div class="card h-100 p-0 radius-12 overflow-hidden">
+                <div class="card-body p-40">
+                    <!-- Contenedor de notificaciones en tiempo real -->
+                    <div id="notificaciones-contenedor" class="mb-4">
+                        <h5 class="mb-3">Notificaciones en Tiempo Real</h5>
+                        <div id="notificaciones" class="notificaciones-lista"></div>
+                    </div>
+
+                    <!-- Configuración de notificaciones -->
+                    <div class="mt-4">
+                        <h5 class="mb-3">Configuración de Notificaciones</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="notificacionesPagos" checked>
+                                    <label class="form-check-label" for="notificacionesPagos">
+                                        Notificaciones de Pagos
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="notificacionesServicios" checked>
+                                    <label class="form-check-label" for="notificacionesServicios">
+                                        Notificaciones de Servicios
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <%- include('components/scripts') %>
+    
+    <script>
+        // Configuración de notificaciones
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificacionesPagos = document.getElementById('notificacionesPagos');
+            const notificacionesServicios = document.getElementById('notificacionesServicios');
+
+            // Cargar preferencias guardadas
+            notificacionesPagos.checked = localStorage.getItem('notificacionesPagos') !== 'false';
+            notificacionesServicios.checked = localStorage.getItem('notificacionesServicios') !== 'false';
+
+            // Guardar preferencias
+            notificacionesPagos.addEventListener('change', function() {
+                localStorage.setItem('notificacionesPagos', this.checked);
+            });
+
+            notificacionesServicios.addEventListener('change', function() {
+                localStorage.setItem('notificacionesServicios', this.checked);
+            });
+        });
+    </script>
+</body>
+</html>

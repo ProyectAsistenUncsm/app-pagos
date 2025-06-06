@@ -1,15 +1,25 @@
-const express = require('express');
-const router = express.Router();
-const serviceController = require('../controllers/serviceController');
-const { verificarToken } = require('../middleware/authMiddleware');
+import { Router } from 'express';
+import { obtenerServicios, vincularServicio, desvincularServicio } from '../controllers/serviceController.js';
+import { verificarToken } from '../middleware/authMiddleware.js';
+
+const router = Router();
 
 // Ruta para obtener todos los servicios
-router.get('/', serviceController.obtenerServicios);
+router.get('/', obtenerServicios);
+
+// Ruta para la página de notificaciones
+router.get('/notification', verificarToken, (req, res) => {
+    res.render('notifications', { 
+        usuario: req.user,
+        title: 'Notificaciones',
+        activePage: 'notification'
+    });
+});
 
 // Ruta para vincular un servicio a un usuario
-router.post('/vincular', verificarToken, serviceController.vincularServicio);
+router.post('/vincular', verificarToken, vincularServicio);
 
 // Ruta para desvincular un servicio de un usuario
-router.post('/desvincular', verificarToken, serviceController.desvincularServicio);
+router.post('/desvincular', verificarToken, desvincularServicio);
 
-module.exports = router;
+export default router;

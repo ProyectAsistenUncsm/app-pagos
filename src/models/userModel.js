@@ -36,7 +36,11 @@ User.init({
   fecha_registro: { 
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW 
-  }
+  },
+  image_profile: { 
+    type: DataTypes.BLOB('long'),
+    allowNull: true 
+  },
 }, {
   sequelize,
   modelName: 'User',

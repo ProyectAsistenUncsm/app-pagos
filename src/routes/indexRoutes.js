@@ -25,6 +25,13 @@ router.get('/perfil', (req, res) => {
     res.render('perfil', { usuario: req.user });
 });
 
+router.get('/register', (req, res) => {
+    if (!req.user) {
+        return res.redirect('/auth/register');
+    }
+    res.render('register', { usuario: req.user });
+});
+
 router.get('/historial', (req, res) => {
     if (!req.user) {
         return res.redirect('/auth/login');
@@ -32,7 +39,6 @@ router.get('/historial', (req, res) => {
     res.render('historial', { usuario: req.user });
 });
 
-router.get('/register', (req, res) => res.render('register'));
 router.get('/login', (req, res) => res.render('login'));
 router.get('/login', (req, res) => res.render('auth/login'));
 router.get('/register', (req, res) => res.render('auth/register'));

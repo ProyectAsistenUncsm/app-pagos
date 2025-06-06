@@ -131,7 +131,7 @@ export const loginUsuario = async (req, res) => {
 // Recuperar contraseña
 export const RecoverPassword = async (req, res) => {
   try {
-    const { correo } = req.body;
+    const { correo, nuevaContrasena, confirmarContrasena } = req.body;
 
     if (!correo) {
       return res.status(400).json({ mensaje: 'El correo es obligatorio' });
@@ -143,13 +143,49 @@ export const RecoverPassword = async (req, res) => {
       return res.status(400).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    // Generar el token JWT para recuperación
+    // Si se proporciona una nueva contraseña, actualizarla
+    if (nuevaContrasena && confirmarContrasena) {
+      // Validar que las contraseñas coincidan
+      if (nuevaContrasena !== confirmarContrasena) {
+        return res.status(400).json({ 
+          mensaje: 'Las contraseñas no coinciden' 
+        });
+      }
+
+      // Validar longitud mínima
+      if (nuevaContrasena.length < 6) {
+        return res.status(400).json({ 
+          mensaje: 'La contraseña debe tener al menos 6 caracteres' 
+        });
+      }
+
+      // Encriptar nueva contraseña
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(nuevaContrasena, salt);
+
+      // Actualizar contraseña
+      user.contrasena = hashedPassword;
+      await user.save();
+
+      return res.json({ 
+        mensaje: 'Contraseña actualizada correctamente',
+        redirect: '/auth/login'
+      });
+    }
+
+    // Si no se proporciona nueva contraseña, generar token para recuperación
     const token = jwt.sign(
-      { id: user.id, correo: user.correo }, 
+      { 
+        id: user.id, 
+        correo: user.correo,
+        tipo: 'recuperacion'
+      }, 
       process.env.JWT_SECRET || 'tu_clave_secreta_por_defecto', 
       { expiresIn: '1h' }
     );
 
+    // Aquí deberías implementar el envío del correo con el enlace
+    // Por ahora solo devolvemos el token
     res.json({ 
       mensaje: 'Se ha enviado un enlace de recuperación a tu correo',
       token 
@@ -158,6 +194,31 @@ export const RecoverPassword = async (req, res) => {
     console.error('Error en recuperación:', error);
     res.status(500).json({ 
       mensaje: 'Error al procesar la recuperación de contraseña',
+      error: error.message 
+    });
+  }
+};
+
+// Cerrar sesión
+export const logout = (req, res) => {
+  try {
+    // Limpiar la cookie del token
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/' // Asegurarse de que la cookie se limpie en todas las rutas
+    });
+
+    // Enviar respuesta exitosa
+    res.status(200).json({ 
+      mensaje: 'Sesión cerrada exitosamente',
+      redirect: '/auth/login'
+    });
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+    res.status(500).json({ 
+      mensaje: 'Error al cerrar sesión',
       error: error.message 
     });
   }

@@ -1,21 +1,41 @@
-import express from 'express';
-import { registrarUsuario, loginUsuario, RecoverPassword } from '../controllers/authController.js';
-import { vistaPerfil } from '../controllers/userController.js';
+import { Router } from 'express';
+import { loginUsuario, registrarUsuario, logout, RecoverPassword } from '../controllers/authController.js';
+import { vistaPerfil, cambiarContrasena } from '../controllers/userController.js';
+import { verificarToken } from '../middleware/authMiddleware.js';
 
-const router = express.Router();
+const router = Router();
 
-// Rutas de autenticación
-router.get('/register', (req, res) => res.render('register'));
-router.get('/login', (req, res) => res.render('login'));
-router.get('/recover', (req, res) => res.render('recover'));
+// Middleware para redirigir usuarios autenticados
+const redirigirAutenticados = (req, res, next) => {
+    if (req.user) {
+        return res.redirect('/');
+    }
+    next();
+};
 
-router.get('/profile', vistaPerfil);
+// Rutas de autenticación (vistas)
+router.get('/register', redirigirAutenticados, (req, res) => res.render('register'));
+router.get('/login', redirigirAutenticados, (req, res) => res.render('login'));
+router.get('/recover', redirigirAutenticados, (req, res) => res.render('recover'));
+router.get('/perfil', verificarToken, vistaPerfil);
 
 // Endpoints de la API
 router.post('/register', registrarUsuario);
 router.post('/login', loginUsuario);
+router.post('/logout', logout);
+router.post('/recover-password', RecoverPassword);
 
-
-router.post('/recover', RecoverPassword);
+// Rutas protegidas que requieren autenticación
+router.post('/cambiar-contrasena', verificarToken, async (req, res) => {
+    try {
+        await cambiarContrasena(req, res);
+    } catch (error) {
+        console.error('Error en cambio de contraseña:', error);
+        res.status(500).json({ 
+            mensaje: 'Error al cambiar la contraseña',
+            error: error.message 
+        });
+    }
+});
 
 export default router;

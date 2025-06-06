@@ -31,34 +31,38 @@
     <div class="row gy-4">
     <div class="col-lg-4">
             <div class="user-grid-card position-relative border radius-16 overflow-hidden bg-base h-100">
-                <img src="../publicassets/images/user-grid/user-grid-bg1-estudiante.png" alt="" class="w-100 object-fit-cover">
+                <img src="/images/user-grid/banco-central-nicaragua-grid.jpg" alt="" class="w-100 object-fit-cover">
                 <div class="pb-24 ms-16 mb-24 me-16  mt--100">
                     <div class="text-center border border-top-0 border-start-0 border-end-0">
-                        <img src="../publicassets/images/user-grid/user-grid-img14-logo-est.png" alt="" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
-                    </div>
+                        <% if (usuario.image_profile) { %>
+                            <img src="data:image/jpeg;base64,<%= usuario.image_profile.toString('base64') %>" alt="Imagen de perfil" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                        <% } else { %>
+                            <img src="/images/user.png" alt="Imagen de perfil por defecto" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                        <% } %>
+                    </div>                    
                     <div class="mt-24">
                         <h6 class="text-xl mb-16">Información Personal</h6>
                         <ul>
                             <li class="d-flex align-items-center gap-1 mb-12">
-                                <span class="w-30 text-md fw-semibold text-primary-light"> Año Id</span>
-<!---->                                <span class="w-70 text-secondary-light fw-medium">: <= usuario.id ></span>
+                                <span class="w-30 text-md fw-semibold text-primary-light">ID</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.id %></span>
                             </li>
                             <li class="d-flex align-items-center gap-1 mb-12">
                                 <span class="w-30 text-md fw-semibold text-primary-light">Nombre Completo</span>
-<!---->                                <span class="w-70 text-secondary-light fw-medium">: <= usuario.nombre ></span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.nombre %></span>
                             </li>
                             <li class="d-flex align-items-center gap-1 mb-12">
-                                <span class="w-30 text-md fw-semibold text-primary-light"> correo</span>
-<!---->                                <span class="w-70 text-secondary-light fw-medium">: <= usuario.correo ></span>
+                                <span class="w-30 text-md fw-semibold text-primary-light">Correo</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.correo %></span>
                             </li>
                             <li class="d-flex align-items-center gap-1 mb-12">
-                                <span class="w-30 text-md fw-semibold text-primary-light"> Numero de Telefono</span>
-<!---->                               <span class="w-70 text-secondary-light fw-medium">: <= usuario.telefono ></span>
+                                <span class="w-30 text-md fw-semibold text-primary-light">Número de Teléfono</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.telefono || 'No especificado' %></span>
                             </li>
-                             <li class="d-flex align-items-center gap-1 mb-12">
-                                <span class="w-30 text-md fw-semibold text-primary-light"> Direccion</span>
-<!---->                                <span class="w-70 text-secondary-light fw-medium">: <= usuario.direccion ></span>
-                            </li> 
+                            <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light">Cédula</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.cedula || 'No especificada' %></span>
+                            </li>
 
                             <!-- <button type="button" class="btn rounded-pill btn-primary-600 radius-8 px-20 py-11">Cambiar foto</button> -->
                         </ul>
@@ -218,7 +222,12 @@
                                         </label>
                                     </div>
                                     <div class="avatar-preview">
-                                        <div id="imagePreview">
+                                        <div id="imagePreview" style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden;">
+                                            <% if (usuario.image_profile) { %>
+                                                <img src="data:image/jpeg;base64,<%= usuario.image_profile.toString('base64') %>" alt="Imagen de perfil" style="width: auto; height: auto; object-fit: cover;">
+                                            <% } else { %>
+                                                <img src="/images/user.png" alt="Imagen de perfil por defecto" style="width: auto; height: auto; object-fit: cover;">
+                                            <% } %>
                                         </div>
                                     </div>
                                 </div>
@@ -227,25 +236,25 @@
 
                             <div class="mb-20">
                                 <h6 class="text-md text-primary-light mb-16">Cambiar Contraseña</h6>
-                                <label for="your-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Nueva Contraseña <span class="text-danger-600">*</span></label>
+                                <label for="nueva-contrasena" class="form-label fw-semibold text-primary-light text-sm mb-8">Nueva Contraseña <span class="text-danger-600">*</span></label>
                                 <div class="position-relative">
-                                    <input type="password" class="form-control radius-8" id="your-password" placeholder="Ingrese nueva contraseña*">
-                                    <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#your-password"></span>
+                                    <input type="password" class="form-control radius-8" id="nueva-contrasena" placeholder="Ingrese nueva contraseña*">
+                                    <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#nueva-contrasena"></span>
                                 </div>
                             </div>
                             <div class="mb-20">
-                                <label for="confirm-password" class="form-label fw-semibold text-primary-light text-sm mb-8">Confirmación Contraseña <span class="text-danger-600">*</span></label>
+                                <label for="confirmar-contrasena" class="form-label fw-semibold text-primary-light text-sm mb-8">Confirmación Contraseña <span class="text-danger-600">*</span></label>
                                 <div class="position-relative">
-                                    <input type="password" class="form-control radius-8" id="confirm-password" placeholder="Confirmar Contraseña *">
-                                    <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#confirm-password"></span>
+                                    <input type="password" class="form-control radius-8" id="confirmar-contrasena" placeholder="Confirmar Contraseña *">
+                                    <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#confirmar-contrasena"></span>
                                 </div>
                             </div>
                             
                             <div class="d-flex align-items-center justify-content-center gap-3">
-                                    <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
+                                    <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8" onclick="cancelarCambios()">
                                         Cancelar
                                     </button>
-                                    <button type="button" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                    <button type="button" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8" onclick="guardarCambios()">
                                         Guardar
                                     </button>
                                 </div>
@@ -258,6 +267,8 @@
     </div>
 </div>
 <%- include('components/scripts') %>
+<script src="/js/uploadprofileimage.js"></script>
+<script src="/js/changesprofileinfo.js"></script>
 </body>
 </html>
 

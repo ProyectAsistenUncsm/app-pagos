@@ -1,8 +1,6 @@
 console.log('Hola mundo');
 
 const express = require('express');
-const http = require('http')
-const socketIO = require('socket.io')
 const helmet = require('helmet');
 const cors = require('cors');
 require('dotenv').config();
@@ -14,35 +12,17 @@ const pagoRoutes = require('../routes/paymentRoutes');
 const usuarioRoutes = require('../routes/usuarios');
 const servicioRoutes = require('../routes/servicios');
 const adminRoutes = require('../routes/admin');
-
+const path = require('path');
 // Inicializa la app
 const app = express();
-const server = http.createServer(app);
 
-// Socket.IO
-const { Server } = require('socket.io');
-const io = new Server(server);
-
-// WebSocket
-io.on('connection', (socket) => {
-  console.log('🟢 Usuario conectado por WebSocket', socket.id);
-
-  socket.on('mensaje', (data) => {
-    console.log('Mensaje recibido:', data);
-    // Reenviar el mensaje a todos
-    io.emit('mensaje', data);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('🔴 Usuario desconectado', socket.id);
-  });
-});
 
 // Seguridad y middlewares
 app.use(helmet());
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb',extended: true }));
 
 
 
@@ -60,6 +40,9 @@ app.get('/vincular-servicio', (req, res) => {
   res.render('vincular-servicio');
 });
 
+
+app.use(express.static(path.join(__dirname, 'src/publicassets')));
+
 app.use(express.static('src/publicassets'));
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -68,14 +51,28 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/servicios', servicioRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Puerto y arranque
-//const PORT = process.env.PORT || 3000;
+// 404 - Página no encontrada
+app.use((req, res) => {
+  res.status(404).render('404', {
+    mensaje: 'Página no encontrada',
+    usuario: req.user
+  });
+});
 
-//db.sequelize.sync().then(() => {
- // app.listen(PORT, () => {
- //   console.log(`Servidor corriendo en puerto ${PORT}`);
- // });
-//});
+// 404 - Página no encontrada
+app.use((req, res) => {
+  res.status(404).render('404', {
+    mensaje: 'Página no encontrada',
+    usuario: req.user
+  });
+});
+
+// Manejo de errores generales
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ mensaje: 'Error interno del servidor' });
+});
+
 
 // Escuchar en puerto (para Heroku usar process.env.PORT)
 const PORT = process.env.PORT || 3000;

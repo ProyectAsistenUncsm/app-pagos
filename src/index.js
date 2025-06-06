@@ -3,19 +3,30 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import authRoutes from './routes/authRoutes.js';
 import indexRoutes from './routes/indexRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import serviceRoutes from './routes/serviceRoutes.js';
 import { User } from './models/indexModel.js';
+import dotenv from 'dotenv';
+
+
+// Configurar variables de entorno
+dotenv.config();
 
 // Configurar __dirname (por usar ESModules)
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Inicializar app
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer);
 
 // Middlewares globales
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, 'publicassets')));
 
@@ -41,8 +52,25 @@ app.use(async (req, res, next) => {
   next();
 });
 
+// Configuración de Socket.IO
+io.on('connection', (socket) => {
+  console.log('🟢 Usuario conectado por WebSocket', socket.id);
+
+  socket.on('mensaje', (data) => {
+    console.log('Mensaje recibido:', data);
+    // Reenviar el mensaje a todos
+    io.emit('mensaje', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('🔴 Usuario desconectado', socket.id);
+  });
+});
+
 // Rutas
 app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
+app.use('/service', serviceRoutes);
 app.use('/', indexRoutes);
 
 // 404 - Página no encontrada
@@ -55,8 +83,8 @@ app.use((req, res) => {
 
 // Arranque del servidor (PORT dinámico para Heroku)
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
-export default app;
+export { app, io };

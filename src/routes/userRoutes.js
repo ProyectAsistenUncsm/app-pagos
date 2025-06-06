@@ -1,10 +1,15 @@
 import { Router } from 'express';
-import { registrarUsuario, loginUsuario, vistaPerfil } from '../controllers/userController.js';
+import { vistaPerfil, actualizarImagenPerfil } from '../controllers/userController.js';
+import { logout } from '../controllers/authController.js';
 import { verificarToken } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
+// Ruta para cerrar sesión
+router.post('/auth/logout', logout);
 
+// Ruta para actualizar imagen de perfil
+router.post('/actualizar-imagen', verificarToken, actualizarImagenPerfil);
 
 // Ruta para obtener perfil del usuario (requiere autenticación)
 router.get('/vista-perfil', verificarToken, vistaPerfil);
