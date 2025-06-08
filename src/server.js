@@ -8,7 +8,7 @@ const db = require('../models');
 const Pago = require('../models/Pago');
 const cookieParser = require('cookie-parser');
 const http = require('http');
-const { Server } = require('socket.io'); // solo si 
+const { Server } = require('socket.io'); // para el uso de sockets 
 
 
 
