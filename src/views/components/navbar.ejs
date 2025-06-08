@@ -56,8 +56,7 @@
 
                         <div class="dropdown">
                             <button class="d-flex justify-content-center align-items-center rounded-circle" type="button" data-bs-toggle="dropdown">
-                                
-                                <% if (usuario.image_profile) { %>
+                                <% if (usuario && usuario.image_profile) { %>
                                     <img src="data:image/jpeg;base64,<%= usuario.image_profile.toString('base64') %>" alt="Imagen de perfil" class="w-40-px h-40-px object-fit-cover rounded-circle">
                                 <% } else { %>
                                     <img src="/images/user.png" alt="Imagen de perfil por defecto" class="w-40-px h-40-px object-fit-cover rounded-circle">

@@ -44,6 +44,15 @@ User.init({
     type: DataTypes.BLOB('long'),
     allowNull: true 
   },
+  rol_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 2, // Por defecto es Usuario (2)
+    references: {
+      model: 'roles',
+      key: 'id'
+    }
+  }
 }, {
   sequelize,
   modelName: 'User',

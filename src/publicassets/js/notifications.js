@@ -1,5 +1,5 @@
-// Importar socket desde websocket.js
-import socket from './websocket.js';
+// Usar el socket global si existe
+const socket = window.socket || null;
 
 // Tipos de notificaciones
 const TIPOS_NOTIFICACION = {
@@ -65,47 +65,51 @@ function crearContenedorNotificaciones() {
     return contenedor;
 }
 
-// Escuchar eventos de pago
-socket.on('pagoRealizado', (data) => {
-    mostrarNotificacion(
-        'Pago Exitoso',
-        `Se ha procesado tu pago de $${data.monto} para el servicio ${data.servicio_nombre}`,
-        TIPOS_NOTIFICACION.SUCCESS
-    );
-});
+// Solo configurar los listeners de socket si existe
+if (socket) {
+    // Escuchar eventos de pago
+    socket.on('pagoRealizado', (data) => {
+        mostrarNotificacion(
+            'Pago Exitoso',
+            `Se ha procesado tu pago de $${data.monto} para el servicio ${data.servicio_nombre}`,
+            TIPOS_NOTIFICACION.SUCCESS
+        );
+    });
 
-socket.on('pagoFallido', (data) => {
-    mostrarNotificacion(
-        'Error en el Pago',
-        `No se pudo procesar tu pago: ${data.mensaje}`,
-        TIPOS_NOTIFICACION.ERROR
-    );
-});
+    socket.on('pagoFallido', (data) => {
+        mostrarNotificacion(
+            'Error en el Pago',
+            `No se pudo procesar tu pago: ${data.mensaje}`,
+            TIPOS_NOTIFICACION.ERROR
+        );
+    });
 
-// Escuchar eventos de servicio
-socket.on('servicioActualizado', (data) => {
-    mostrarNotificacion(
-        'Estado de Servicio Actualizado',
-        `El servicio ${data.servicio_nombre} ha cambiado a ${data.estado}`,
-        TIPOS_NOTIFICACION.INFO
-    );
-});
+    // Escuchar eventos de servicio
+    socket.on('servicioActualizado', (data) => {
+        mostrarNotificacion(
+            'Estado de Servicio Actualizado',
+            `El servicio ${data.servicio_nombre} ha cambiado a ${data.estado}`,
+            TIPOS_NOTIFICACION.INFO
+        );
+    });
 
-socket.on('servicioVinculado', (data) => {
-    mostrarNotificacion(
-        'Servicio Vinculado',
-        `Has vinculado exitosamente el servicio ${data.servicio_nombre}`,
-        TIPOS_NOTIFICACION.SUCCESS
-    );
-});
+    socket.on('servicioVinculado', (data) => {
+        mostrarNotificacion(
+            'Servicio Vinculado',
+            `Has vinculado exitosamente el servicio ${data.servicio_nombre}`,
+            TIPOS_NOTIFICACION.SUCCESS
+        );
+    });
 
-socket.on('servicioDesvinculado', (data) => {
-    mostrarNotificacion(
-        'Servicio Desvinculado',
-        `Has desvinculado el servicio ${data.servicio_nombre}`,
-        TIPOS_NOTIFICACION.WARNING
-    );
-});
+    socket.on('servicioDesvinculado', (data) => {
+        mostrarNotificacion(
+            'Servicio Desvinculado',
+            `Has desvinculado el servicio ${data.servicio_nombre}`,
+            TIPOS_NOTIFICACION.WARNING
+        );
+    });
+}
 
-// Exportar funciones para uso en otros archivos
-export { mostrarNotificacion, TIPOS_NOTIFICACION };
+// Hacer las funciones disponibles globalmente
+window.mostrarNotificacion = mostrarNotificacion;
+window.TIPOS_NOTIFICACION = TIPOS_NOTIFICACION;

@@ -11,6 +11,7 @@ import userRoutes from './routes/userRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import { User } from './models/indexModel.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 import dotenv from 'dotenv';
 
 
@@ -73,8 +74,8 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/service', serviceRoutes);
 app.use('/pay', paymentRoutes);
-app.use('/', indexRoutes);{
-}
+app.use('/admin', adminRoutes);
+app.use('/', indexRoutes);
 
 // 404 - Página no encontrada
 app.use((req, res) => {
@@ -91,3 +92,4 @@ httpServer.listen(PORT, () => {
 });
 
 export { app, io };
+

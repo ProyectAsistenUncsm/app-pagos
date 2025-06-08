@@ -1,5 +1,7 @@
   // ================================== Crm Home widgets charts Start =================================
   function createChart(chartId, chartColor) {
+    const element = document.querySelector(`#${chartId}`);
+    if (!element) return; // Si el elemento no existe, no crear el gráfico
 
     let currentYear = new Date().getFullYear();
 
@@ -111,7 +113,7 @@
       },
     };
 
-    var chart = new ApexCharts(document.querySelector(`#${chartId}`), options);
+    var chart = new ApexCharts(element, options);
     chart.render();
   }
 
@@ -127,6 +129,8 @@
 
   // ================================ Revenue Growth Area Chart Start ================================ 
   function createChartTwo(chartId, chartColor) {
+    const element = document.querySelector(`#${chartId}`);
+    if (!element) return; // Si el elemento no existe, no crear el gráfico
     
     var options = {
       series: [
@@ -246,7 +250,7 @@
       },
     };
 
-    var chart = new ApexCharts(document.querySelector(`#${chartId}`), options);
+    var chart = new ApexCharts(element, options);
     chart.render();
   }
   createChartTwo('revenue-chart', '#487fff');

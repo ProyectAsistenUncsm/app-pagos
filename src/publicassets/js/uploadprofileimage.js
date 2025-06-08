@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (file) {
                 // Validar tipo de archivo
                 if (!file.type.match('image.*')) {
-                    alert('Por favor seleccione una imagen válida (PNG, JPG, JPEG)');
+                    window.mostrarNotificacion('Por favor seleccione una imagen válida (PNG, JPG, JPEG)', 'error');
                     return;
                 }
 
                 // Validar tamaño (5MB máximo)
                 if (file.size > 5 * 1024 * 1024) {
-                    alert('La imagen no debe superar los 5MB');
+                    window.mostrarNotificacion('La imagen no debe superar los 5MB', 'error');
                     return;
                 }
 
@@ -62,16 +62,40 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Guardar la imagen temporalmente
                         window.imagenTemporal = resizedImage;
+
+                        // Emitir evento de vista previa de imagen
+                        if (window.socket) {
+                            window.socket.emit('vistaPreviaImagen', {
+                                imageData: resizedImage
+                            });
+                        }
                     };
                     img.src = e.target.result;
                 };
 
                 reader.onerror = function() {
                     console.error('Error al leer el archivo');
-                    alert('Error al leer el archivo. Por favor, intente nuevamente.');
+                    window.mostrarNotificacion('Error al leer el archivo. Por favor, intente nuevamente.', 'error');
                 };
 
                 reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Escuchar eventos de actualización de imagen de perfil
+    if (window.socket) {
+        window.socket.on('imagenPerfilActualizada', (data) => {
+            if (data.image_profile) {
+                const previewImg = document.createElement('img');
+                previewImg.src = data.image_profile;
+                previewImg.alt = 'Imagen de perfil';
+                previewImg.style.width = 'auto';
+                previewImg.style.height = 'auto';
+                previewImg.style.objectFit = 'cover';
+                
+                imagePreview.innerHTML = '';
+                imagePreview.appendChild(previewImg);
             }
         });
     }

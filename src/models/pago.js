@@ -38,18 +38,12 @@ Pago.init({
         type: DataTypes.STRING(20),
         allowNull: false,
         defaultValue: 'completado'
-    },
-    createdAt: {
-        type: DataTypes.DATE
-    },
-    updatedAt: {
-        type: DataTypes.DATE
     }
 }, {
     sequelize,
     modelName: 'Pago',
-    tableName: 'pays',
-    timestamps: true
+    tableName: 'Pays',
+    timestamps: false
 });
 
 export default Pago;

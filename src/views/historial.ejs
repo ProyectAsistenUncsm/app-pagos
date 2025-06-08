@@ -26,48 +26,48 @@
                 </ul>
             </div>
 
-            <div class="row">
-                <% pagos.forEach(pago => { %>
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100 p-0 radius-12 overflow-hidden">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">Pago #<%= pago.numero_transaccion %></h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <h6 class="text-muted">Servicio</h6>
-                                    <p class="fw-semibold"><%= pago.PayService.nombre %></p>
-                                </div>
-                                <div class="mb-3">
-                                    <h6 class="text-muted">Monto</h6>
-                                    <p class="fw-semibold">$<%= pago.monto %></p>
-                                </div>
-                                <div class="mb-3">
-                                    <h6 class="text-muted">Fecha</h6>
-                                    <p><%= pago.fecha_pago.toLocaleDateString() %></p>
-                                </div>
-                                <div class="mb-3">
-                                    <h6 class="text-muted">Método de Pago</h6>
-                                    <p><%= pago.metodo_pago %></p>
-                                </div>
-                                <div class="mb-3">
-                                    <h6 class="text-muted">Estado</h6>
-                                    <span class="badge bg-<%= pago.estado === 'completado' ? 'success' : pago.estado === 'pendiente' ? 'warning' : 'danger' %>">
-                                        <%= pago.estado %>
-                                    </span>
-                                </div>
-                                <% if (pago.PayService.data) { %>
-                                    <div class="mb-3">
-                                        <h6 class="text-muted">Datos Adicionales</h6>
-                                        <p><%= pago.PayService.data.descripcion %></p>
-                                    </div>
-                                <% } %>
-                            </div>
+            <div class="card">
+                <div class="card-body">
+                    <% if (pagos && pagos.length > 0) { %>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Servicio</th>
+                                        <th>Monto</th>
+                                        <th>Método</th>
+                                        <th>Referencia</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% pagos.forEach(pago => { %>
+                                        <tr>
+                                            <td><%= new Date(pago.fecha_pago).toLocaleDateString() %></td>
+                                            <td><%= pago.PayService.nombre %></td>
+                                            <td>$<%= pago.monto %></td>
+                                            <td><%= pago.metodo_pago %></td>
+                                            <td><%= pago.referencia %></td>
+                                            <td>
+                                                <span class="badge bg-<%= pago.estado === 'completado' ? 'success' : 'warning' %>">
+                                                    <%= pago.estado %>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                <% }); %>
+                    <% } else { %>
+                        <div class="text-center py-5">
+                            <p class="text-muted">No hay pagos registrados</p>
+                        </div>
+                    <% } %>
+                </div>
             </div>
         </div>
     </main>
 </body>
+<script src="/js/historial.js"></script>
 </html>

@@ -228,15 +228,13 @@ export const obtenerHistorialPagos = async (req, res) => {
         
         const pagos = await Pago.findAll({
             where: {
-                usuario_id: usuarioId
+                user_id: usuarioId
             },
             include: [{
                 model: PayService,
-                include: [{
-                    model: PayServicesData,
-                    as: 'data'
-                }]
+                attributes: ['id', 'nombre', 'descripcion']
             }],
+            attributes: { exclude: ['createdAt', 'updatedAt', 'factura_id'] },
             order: [['fecha_pago', 'DESC']]
         });
 

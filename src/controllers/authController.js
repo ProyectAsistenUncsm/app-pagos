@@ -39,7 +39,8 @@ export const registrarUsuario = async (req, res) => {
       contrasena: contrasenaEncriptada,
       telefono,
       cedula,
-      fecha_registro: new Date()
+      fecha_registro: new Date(),
+      rol_id: 2 // Siempre será Usuario
     });
 
     // Notificar a los clientes conectados sobre el nuevo usuario
@@ -55,7 +56,8 @@ export const registrarUsuario = async (req, res) => {
         nombre: nuevoUser.nombre,
         correo: nuevoUser.correo,
         telefono: nuevoUser.telefono,
-        cedula: nuevoUser.cedula
+        cedula: nuevoUser.cedula,
+        rol_id: nuevoUser.rol_id
       }
     });
   } catch (error) {
@@ -96,7 +98,8 @@ export const loginUsuario = async (req, res) => {
       { 
         id: user.id, 
         correo: user.correo,
-        nombre: user.nombre 
+        nombre: user.nombre,
+        rol_id: user.rol_id
       }, 
       process.env.JWT_SECRET || 'tu_clave_secreta_por_defecto', 
       { expiresIn: '1h' }
@@ -116,7 +119,8 @@ export const loginUsuario = async (req, res) => {
       usuario: {
         id: user.id,
         nombre: user.nombre,
-        correo: user.correo
+        correo: user.correo,
+        rol_id: user.rol_id
       }
     });
   } catch (error) {

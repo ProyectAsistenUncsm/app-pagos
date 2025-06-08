@@ -18,7 +18,7 @@
         <h6 class="fw-semibold mb-0">Perfil de usuario</h6>
         <ul class="d-flex align-items-center gap-2">
             <li class="fw-medium">
-                <a href="https://app-pagos-8eec291213d0.herokuapp.com/" class="d-flex align-items-center gap-1 hover-text-primary">
+                <a href="/" class="d-flex align-items-center gap-1 hover-text-primary">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
                     Volver a Inicio
                 </a>
@@ -34,7 +34,7 @@
                 <img src="/images/user-grid/banco-central-nicaragua-grid.jpg" alt="" class="w-100 object-fit-cover">
                 <div class="pb-24 ms-16 mb-24 me-16  mt--100">
                     <div class="text-center border border-top-0 border-start-0 border-end-0">
-                        <% if (usuario.image_profile) { %>
+                        <% if (usuario && usuario.image_profile) { %>
                             <img src="data:image/jpeg;base64,<%= usuario.image_profile.toString('base64') %>" alt="Imagen de perfil" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
                         <% } else { %>
                             <img src="/images/user.png" alt="Imagen de perfil por defecto" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
@@ -63,6 +63,16 @@
                                 <span class="w-30 text-md fw-semibold text-primary-light">Cédula</span>
                                 <span class="w-70 text-secondary-light fw-medium">: <%= usuario.cedula || 'No especificada' %></span>
                             </li>
+                            <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light">Tipo de Usuario</span>
+                                <span class="w-70 text-secondary-light fw-medium">
+                                  <% if (usuario.rol_id === 1) { %>
+                                    <span class="badge bg-primary">Administrador</span>
+                                  <% } else { %>
+                                    <span class="badge bg-secondary">Usuario</span>
+                                  <% } %>
+                                </span>
+                              </li>
 
                             <!-- <button type="button" class="btn rounded-pill btn-primary-600 radius-8 px-20 py-11">Cambiar foto</button> -->
                         </ul>
@@ -77,11 +87,6 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link d-flex align-items-center px-24 active" id="pills-edit-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-edit-profile" type="button" role="tab" aria-controls="pills-edit-profile" aria-selected="true">
                                 Detalles
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link d-flex align-items-center px-24" id="pills-change-passwork-tab" data-bs-toggle="pill" data-bs-target="#pills-change-passwork" type="button" role="tab" aria-controls="pills-change-passwork" aria-selected="false" tabindex="-1">
-                                Tarjetas
                             </button>
                         </li>
                         
@@ -99,116 +104,41 @@
                                     <div class="col-sm-6">
                                         <div class="mb-20">
                                             <label for="carrera" class="form-label fw-semibold text-primary-light text-sm mb-8">Servicio <span class="text-danger-600"></span></label>
-<!---->                                            <input <= usuario.Servicio?.nombre || 'N/A'  >
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="año_cursado" class="form-label fw-semibold text-primary-light text-sm mb-8">Año cursando <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="año_cursado" value="2024" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="titulo" class="form-label fw-semibold text-primary-light text-sm mb-8">Título de Grado</label>
-                                            <input type="text" class="form-control radius-8" id="titulo" value="Grado" disabled>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                            <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                <label for="companzNew" class="position-absolute w-100 h-100 start-0 top-0"></label>
-                                <div class="d-flex align-items-center gap-3 justify-content-between">
-                                    <span class="form-check-label line-height-1 fw-medium text-secondary-light">Notificar inacistencias en las clases</span>
-                                    <input class="form-check-input" type="checkbox" role="switch" id="companzNew">
-                                </div>
-                            </div>
-                            <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                <label for="pushNotifcation" class="position-absolute w-100 h-100 start-0 top-0"></label>
-                                <div class="d-flex align-items-center gap-3 justify-content-between">
-                                    <span class="form-check-label line-height-1 fw-medium text-secondary-light">Notificar peligro de dejar las clases</span>
-                                    <input class="form-check-input" type="checkbox" role="switch" id="pushNotifcation" checked>
-                                </div>
-                            </div>
-                            <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                <label for="weeklyLetters" class="position-absolute w-100 h-100 start-0 top-0"></label>
-                                <div class="d-flex align-items-center gap-3 justify-content-between">
-                                    <span class="form-check-label line-height-1 fw-medium text-secondary-light">Notificar noticias acerca de sus clases</span>
-                                    <input class="form-check-input" type="checkbox" role="switch" id="weeklyLetters" checked>
-                                </div>
-                            </div>
+
+                            <!-- Pestaña de Servicios -->
+                <div class="tab-pane fade show active" id="pills-servicios" role="tabpanel" aria-labelledby="pills-servicios-tab">
+                    <div class="card">
+                      <div class="card-body">
+                        <div id="serviciosVinculados">
+                          <% if (usuario.UsuarioServices && usuario.UsuarioServices.length > 0) { %>
+                            <% usuario.UsuarioServices.forEach(servicio => { %>
+                              <div class="servicio-item mb-3 p-3 border rounded">
+                                <h6 class="mb-2"><%= servicio.PayService.nombre %></h6>
+                                <p class="mb-1">Número de Factura: <%= servicio.numero_cuenta %></p>
+                                <p class="mb-1">Estado: <span class="badge bg-<%= servicio.estado === 'pagado' ? 'success' : servicio.estado === 'pendiente' ? 'warning' : 'danger' %>">
+                                  <%= servicio.estado.charAt(0).toUpperCase() + servicio.estado.slice(1) %>
+                                </span></p>
+                                <p class="mb-1">Monto: C$ <%= servicio.monto %></p>
+                                <p class="mb-0">Vencimiento: <%= new Date(servicio.fecha_vencimiento).toLocaleDateString() %></p>
+                              </div>
+                            <% }); %>
+                          <% } else { %>
+                            <p class="text-muted">No hay servicios vinculados</p>
+                          <% } %>
+                        </div>
+                        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#vincularServicioModal">
+                          <i class="fas fa-plus"></i> Vincular Nuevo Servicio
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                         </div>
 
-                        <div class="tab-pane fade" id="pills-change-passwork" role="tabpanel" aria-labelledby="pills-change-passwork-tab" tabindex="0">
-                        <form action="#">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="area_conocimiento" class="form-label fw-semibold text-primary-light text-sm mb-8">Área del conocimiento <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="area_conocimiento" value="Ciencia, Tecnología y Ambiente" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="departamento" class="form-label fw-semibold text-primary-light text-sm mb-8">Departamento <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="departamento" value="Ingeniería" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="asig" class="form-label fw-semibold text-primary-light text-sm mb-8">Asignatura Impartiendo<span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="asig" value="Ing.Software I" disabled>
-                                            <input type="text" class="form-control radius-8" id="asig" value="Programación Orientada a Objeto" disabled>
-                                            <input type="text" class="form-control radius-8" id="asig" value="Sistema de Información Geografica" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="tab-pane fade" id="pills-notification" role="tabpanel" aria-labelledby="pills-notification-tab" tabindex="0">
-                            <form action="#">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="area_conocimiento" class="form-label fw-semibold text-primary-light text-sm mb-8">Cargo <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="area_conocimiento" value="Administrador" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="departamento" class="form-label fw-semibold text-primary-light text-sm mb-8">Horario de Trabajo <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="departamento" value="Matutino" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="departamento" class="form-label fw-semibold text-primary-light text-sm mb-8">Elemento extra <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="departamento" value="..........." disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="tab-pane fade" id="trabajador" role="tabpanel" aria-labelledby="trabajador" tabindex="0">
-                        <form action="#">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="area_conocimiento" class="form-label fw-semibold text-primary-light text-sm mb-8">Cargo <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="area_conocimiento" value="Jardinero" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mb-20">
-                                            <label for="departamento" class="form-label fw-semibold text-primary-light text-sm mb-8">Horario de Trabajo <span class="text-danger-600"></span></label>
-                                            <input type="text" class="form-control radius-8" id="departamento" value="Matutino" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                        
                     
                         <div class="tab-pane fade" id="ajuste-perfil" role="tabpanel" aria-labelledby="ajuste-perfil-tab" tabindex="0">
                             <h6 class="text-md text-primary-light mb-16">Imagen del perfil</h6>
@@ -223,7 +153,7 @@
                                     </div>
                                     <div class="avatar-preview">
                                         <div id="imagePreview" style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden;">
-                                            <% if (usuario.image_profile) { %>
+                                            <% if (usuario && usuario.image_profile) { %>
                                                 <img src="data:image/jpeg;base64,<%= usuario.image_profile.toString('base64') %>" alt="Imagen de perfil" style="width: auto; height: auto; object-fit: cover;">
                                             <% } else { %>
                                                 <img src="/images/user.png" alt="Imagen de perfil por defecto" style="width: auto; height: auto; object-fit: cover;">
@@ -266,9 +196,43 @@
         </div>
     </div>
 </div>
+</main>
+<!-- Modal para Vincular Servicio -->
+<div class="modal fade" id="vincularServicioModal" tabindex="-1" aria-labelledby="vincularServicioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="vincularServicioModalLabel">Vincular Nuevo Servicio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="vincularServicioForm">
+            <div class="mb-3">
+              <label for="servicio" class="form-label">Servicio</label>
+              <select class="form-select" id="servicio" required>
+                <option value="">Seleccione un servicio</option>
+                <option value="1">Enacal</option>
+                <option value="2">Dissnorte-Disur</option>
+                <option value="3">INNS</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="numeroFactura" class="form-label">Número de Factura</label>
+              <input type="text" class="form-control" id="numeroFactura" required placeholder="Ingrese el número de factura">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="guardarServicio">Buscar Factura</button>
+        </div>
+      </div>
+    </div>
+  </div>
 <%- include('components/scripts') %>
 <script src="/js/uploadprofileimage.js"></script>
 <script src="/js/changesprofileinfo.js"></script>
+<script src="/js/vincularservicio_pay.js"></script>
 </body>
 </html>
 

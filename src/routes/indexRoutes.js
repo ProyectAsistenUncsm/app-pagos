@@ -56,7 +56,18 @@ router.get('/register', (req, res) => res.render('auth/register'));
 router.get('/vincular-service', (req, res) => res.render('auth/vincular-service'));
 router.get('/recover', (req, res) => res.render('recover'));
 
-// Ruta para el historial de pagos
-router.get('/historial', verificarToken, obtenerHistorialPagos);
+// Ruta para el panel de administración
+router.get('/admin', verificarToken, (req, res) => {
+    if (req.user.rol_id !== 1) {
+        return res.status(403).render('error', {
+            mensaje: 'No tienes permisos para acceder a esta página',
+            usuario: req.user
+        });
+    }
+    res.render('admin', { 
+        usuario: req.user,
+        title: 'Panel de Administración'
+    });
+});
 
 export default router;

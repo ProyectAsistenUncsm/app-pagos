@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 correo: document.getElementById('correo').value,
                 telefono: document.getElementById('telefono').value,
                 cedula: document.getElementById('cedula').value,
-                contrasena: document.getElementById('password').value
+                contrasena: document.getElementById('password').value,
+                rol_id: 2 // Rol Usuario por defecto
             };
 
             try {
