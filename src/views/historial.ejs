@@ -34,6 +34,9 @@
                                 <thead>
                                     <tr>
                                         <th>Fecha</th>
+                                        <% if (typeof esAdmin !== 'undefined' && esAdmin) { %>
+                                            <th>Usuario</th>
+                                        <% } %>
                                         <th>Servicio</th>
                                         <th>Monto</th>
                                         <th>Método</th>
@@ -44,14 +47,26 @@
                                 <tbody>
                                     <% pagos.forEach(pago => { %>
                                         <tr>
-                                            <td><%= new Date(pago.fecha_pago).toLocaleDateString() %></td>
-                                            <td><%= pago.PayService.nombre %></td>
-                                            <td>$<%= pago.monto %></td>
-                                            <td><%= pago.metodo_pago %></td>
-                                            <td><%= pago.referencia %></td>
+                                            <td><%= new Date(pago.fecha_pago).toLocaleDateString('es-ES', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            }) %></td>
+                                            <% if (typeof esAdmin !== 'undefined' && esAdmin) { %>
+                                                <td>
+                                                    <%= pago.User ? pago.User.nombre : 'N/A' %><br>
+                                                    <small class="text-muted"><%= pago.User ? pago.User.correo : 'N/A' %></small>
+                                                </td>
+                                            <% } %>
+                                            <td><%= pago.PayService ? pago.PayService.nombre : 'N/A' %></td>
+                                            <td>$<%= typeof pago.monto === 'number' ? pago.monto.toFixed(2) : parseFloat(pago.monto || 0).toFixed(2) %></td>
+                                            <td><%= pago.metodo_pago || 'N/A' %></td>
+                                            <td><%= pago.referencia || 'N/A' %></td>
                                             <td>
                                                 <span class="badge bg-<%= pago.estado === 'completado' ? 'success' : 'warning' %>">
-                                                    <%= pago.estado %>
+                                                    <%= pago.estado || 'pendiente' %>
                                                 </span>
                                             </td>
                                         </tr>
@@ -69,5 +84,4 @@
         </div>
     </main>
 </body>
-<script src="/js/historial.js"></script>
 </html>

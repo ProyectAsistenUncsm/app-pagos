@@ -1,17 +1,44 @@
 import { Router } from 'express';
 import { cargarPaginaPago, realizarPago, obtenerHistorialPagos } from '../controllers/paymentController.js';
 import { verificarToken } from '../middleware/authMiddleware.js';
-import { PayService } from '../models/indexModel.js';
+import { PayService, Factura } from '../models/indexModel.js';
 import { vistaPerfil } from '../controllers/userController.js';
 
 const router = Router();
 
 // Ruta principal
-router.get('/', (req, res) => {
-    if (req.user) {
-        res.render('index', { usuario: req.user });
-    } else {
-        res.redirect('/auth/login');
+router.get('/', verificarToken, async (req, res) => {
+    try {
+        // Obtener las facturas del usuario
+        const facturas = await Factura.findAll({
+            where: { usuario_id: req.user.id },
+            include: [{
+                model: PayService,
+                attributes: ['nombre', 'descripcion']
+            }],
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Log para depuración
+        console.log('Facturas encontradas:', facturas.map(f => ({
+            id: f.id,
+            servicio: f.PayService.nombre,
+            estado: f.estado,
+            fecha_vencimiento: f.fecha_vencimiento,
+            fecha_actual: new Date(),
+            esta_vencida: new Date(f.fecha_vencimiento) < new Date()
+        })));
+
+        res.render('index', { 
+            usuario: req.user,
+            facturas: facturas
+        });
+    } catch (error) {
+        console.error('Error al cargar la página principal:', error);
+        res.status(500).render('error', {
+            mensaje: 'Error al cargar la página principal',
+            usuario: req.user
+        });
     }
 });
 

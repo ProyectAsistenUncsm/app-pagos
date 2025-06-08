@@ -14,19 +14,14 @@ PayService.init({
         allowNull: false
     },
     descripcion: {
-        type: DataTypes.TEXT
-    },
-    createdAt: {
-        type: DataTypes.DATE
-    },
-    updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.TEXT,
+        allowNull: true
     }
 }, {
     sequelize,
     modelName: 'PayService',
     tableName: 'pay_services',
-    timestamps: true
+    timestamps: false
 });
 
 export default PayService; 

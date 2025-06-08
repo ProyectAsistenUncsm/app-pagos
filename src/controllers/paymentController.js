@@ -1,4 +1,4 @@
-import { Pago, PayService, PayServicesData, UsuarioService } from '../models/indexModel.js';
+import { Pago, PayService, PayServicesData, UsuarioService, Factura, User } from '../models/indexModel.js';
 import { io } from '../index.js';
 
 // Obtener facturas pendientes del usuario
@@ -24,197 +24,84 @@ export const obtenerFacturasPendientes = async (req, res) => {
     }
 };
 
-// Cargar página de pago con datos de la factura
+// Cargar página de pago
 export const cargarPaginaPago = async (req, res) => {
     try {
-        const { pay_service_id } = req.params;
-        const usuarioId = req.user.id;
-
-        console.log('Cargando página de pago para:', { pay_service_id, usuarioId });
-
-        // Validar que el pay_service_id sea un número válido
-        const serviceId = parseInt(pay_service_id);
-        if (isNaN(serviceId) || serviceId <= 0) {
-            console.log('ID de servicio inválido:', pay_service_id);
-            return res.status(400).render('error', {
-                mensaje: 'ID de servicio inválido. Debe ser un número positivo.'
-            });
-        }
-
-        // Buscar el servicio primero para validar que existe
-        const payService = await PayService.findByPk(serviceId, {
-            attributes: ['id', 'nombre', 'descripcion'],
-            include: [{ model: PayServicesData, as: 'data' }]
-        });
-
-        if (!payService) {
-            console.log('Servicio no encontrado:', serviceId);
-            return res.status(404).render('error', {
-                mensaje: `El servicio con ID ${serviceId} no existe en el sistema`
-            });
-        }
-
-        console.log('Servicio encontrado:', payService.toJSON());
-
-        // Buscar el servicio del usuario
-        const usuarioService = await UsuarioService.findOne({
+        const { id } = req.params;
+        
+        // Buscar la factura con el servicio asociado
+        const factura = await Factura.findOne({
             where: {
-                user_id: usuarioId,
-                pay_service_id: serviceId,
-                estado: 'pendiente'
+                id: id,
+                usuario_id: req.user.id
             },
             include: [{
                 model: PayService,
-                attributes: ['nombre', 'descripcion'],
-                include: [{
-                    model: PayServicesData,
-                    as: 'data'
-                }]
+                attributes: ['nombre', 'descripcion']
             }]
         });
 
-        // Si no hay servicio pendiente, crear uno nuevo
-        if (!usuarioService) {
-            console.log('No se encontró servicio pendiente, creando nuevo servicio');
-            const nuevoServicio = await UsuarioService.create({
-                user_id: usuarioId,
-                pay_service_id: serviceId,
-                estado: 'pendiente',
-                monto: payService.data?.monto || 0,
-                numero_cuenta: `ACC-${Date.now()}`,
-                fecha_vencimiento: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 días
-            });
-
-            // Cargar el nuevo servicio con sus relaciones
-            const servicioCompleto = await UsuarioService.findByPk(nuevoServicio.id, {
-                include: [{
-                    model: PayService,
-                    attributes: ['nombre', 'descripcion'],
-                    include: [{
-                        model: PayServicesData,
-                        as: 'data'
-                    }]
-                }]
-            });
-
-            console.log('Nuevo servicio creado:', servicioCompleto.toJSON());
-
-            return res.render('pagos', {
-                factura: servicioCompleto,
-                usuario: req.user,
-                title: 'Pago de Servicio'
+        if (!factura) {
+            return res.status(404).render('error', {
+                mensaje: 'Factura no encontrada',
+                usuario: req.user
             });
         }
 
-        console.log('Servicio encontrado:', usuarioService.toJSON());
-
         res.render('pagos', {
-            factura: usuarioService,
             usuario: req.user,
-            title: 'Pago de Servicio'
+            factura: factura
         });
     } catch (error) {
-        console.error('Error detallado al cargar página de pago:', {
-            mensaje: error.message,
-            stack: error.stack,
-            nombre: error.name
-        });
+        console.error('Error al cargar página de pago:', error);
         res.status(500).render('error', {
-            mensaje: 'Error al cargar la página de pago. Por favor, intente nuevamente.'
+            mensaje: 'Error al cargar la página de pago',
+            usuario: req.user
         });
     }
 };
 
-// Realizar el pago
+// Realizar pago
 export const realizarPago = async (req, res) => {
     try {
         const { pay_service_id, monto, datos_bancarios } = req.body;
-        const usuarioId = req.user.id;
 
-        console.log('Iniciando proceso de pago:', { pay_service_id, usuarioId });
+        // Aquí iría la lógica para procesar el pago
+        // Por ahora solo simulamos un pago exitoso
 
-        // Validar datos requeridos
-        if (!pay_service_id || !monto || !datos_bancarios) {
-            console.log('Faltan datos requeridos:', { pay_service_id, monto, datos_bancarios });
-            return res.status(400).json({
-                mensaje: 'Faltan datos requeridos para realizar el pago'
-            });
-        }
-
-        // Validar que el pay_service_id sea un número válido
-        const serviceId = parseInt(pay_service_id);
-        if (isNaN(serviceId) || serviceId <= 0) {
-            console.log('ID de servicio inválido:', pay_service_id);
-            return res.status(400).json({
-                mensaje: 'ID de servicio inválido. Debe ser un número positivo.'
-            });
-        }
-
-        // Verificar que el servicio existe y está pendiente
-        const usuarioService = await UsuarioService.findOne({
-            where: {
-                user_id: usuarioId,
-                pay_service_id: serviceId,
-                estado: 'pendiente'
-            },
-            include: [{
-                model: PayService,
-                attributes: ['nombre']
-            }]
-        });
-
-        if (!usuarioService) {
-            console.log('No se encontró servicio pendiente:', { usuarioId, serviceId });
-            return res.status(404).json({
-                mensaje: 'No se encontró ningún servicio pendiente para este servicio'
-            });
-        }
-
-        console.log('Servicio encontrado:', usuarioService.toJSON());
-
-        // Crear el registro de pago
+        // Crear el registro del pago
         const pago = await Pago.create({
-            user_id: usuarioId,
-            pay_service_id: serviceId,
-            monto,
+            user_id: req.user.id,
+            pay_service_id: pay_service_id,
+            monto: monto,
             fecha_pago: new Date(),
+            referencia: `PAY-${Date.now()}`,
             metodo_pago: 'tarjeta',
-            estado: 'completado',
-            referencia: `PAY-${Date.now()}`
+            estado: 'completado'
         });
 
-        // Actualizar estado del servicio
-        usuarioService.estado = 'pagado';
-        await usuarioService.save();
-
-        console.log('Pago realizado exitosamente:', pago.toJSON());
-
-        // Emitir evento de pago exitoso
-        io.emit('pagoRealizado', {
-            user_id: usuarioId,
-            pay_service_id: serviceId,
-            servicio_nombre: usuarioService.PayService.nombre,
-            monto,
-            fecha: pago.fecha_pago
-        });
+        // Actualizar el estado de la factura
+        await Factura.update(
+            { estado: 'pagado' },
+            { 
+                where: { 
+                    pay_service_id,
+                    usuario_id: req.user.id,
+                    estado: 'pendiente'
+                }
+            }
+        );
 
         res.json({ 
+            success: true,
             mensaje: 'Pago realizado exitosamente',
-            pago,
-            servicio: usuarioService
+            pago: pago
         });
     } catch (error) {
         console.error('Error al realizar pago:', error);
-        
-        // Emitir evento de pago fallido
-        io.emit('pagoFallido', {
-            user_id: req.user?.id,
-            pay_service_id: req.body?.pay_service_id,
-            mensaje: error.message
-        });
-
         res.status(500).json({ 
-            mensaje: 'Error al realizar el pago. Por favor, intente nuevamente.',
+            success: false,
+            mensaje: 'Error al procesar el pago',
             error: error.message 
         });
     }
@@ -224,36 +111,50 @@ export const realizarPago = async (req, res) => {
 export const obtenerHistorialPagos = async (req, res) => {
     try {
         const usuarioId = req.user.id;
+        const esAdmin = req.user.rol_id === 1; // Asumiendo que 1 es el ID del rol de administrador
+        
         console.log('Obteniendo historial para usuario:', usuarioId);
+        console.log('Es administrador:', esAdmin);
+        
+        // Construir la consulta base
+        const whereClause = esAdmin ? {} : { user_id: usuarioId };
         
         const pagos = await Pago.findAll({
-            where: {
-                user_id: usuarioId
-            },
-            include: [{
-                model: PayService,
-                attributes: ['id', 'nombre', 'descripcion']
-            }],
-            attributes: { exclude: ['createdAt', 'updatedAt', 'factura_id'] },
+            where: whereClause,
+            include: [
+                {
+                    model: PayService,
+                    attributes: ['id', 'nombre', 'descripcion']
+                },
+                {
+                    model: User,
+                    attributes: ['id', 'nombre', 'correo'],
+                    required: true // Asegura que solo se incluyan pagos con usuarios válidos
+                }
+            ],
             order: [['fecha_pago', 'DESC']]
         });
 
         console.log('Pagos encontrados:', pagos.length);
-        console.log('Primer pago (si existe):', pagos[0] ? JSON.stringify(pagos[0].toJSON(), null, 2) : 'No hay pagos');
+        if (pagos.length > 0) {
+            console.log('Primer pago (si existe):', JSON.stringify(pagos[0], null, 2));
+        }
 
-        res.render('historial', {
-            pagos,
-            usuario: req.user,
+        // Asegurarnos de que todos los datos necesarios estén disponibles
+        const datosVista = {
+            pagos: pagos || [],
+            usuario: req.user || {},
+            esAdmin: esAdmin || false,
             title: 'Historial de Pagos'
-        });
+        };
+
+        res.render('historial', datosVista);
     } catch (error) {
-        console.error('Error detallado al obtener historial de pagos:', {
-            mensaje: error.message,
-            stack: error.stack,
-            nombre: error.name
-        });
+        console.error('Error al obtener historial de pagos:', error);
         res.status(500).render('error', {
-            mensaje: `Error al cargar el historial de pagos: ${error.message}`
+            mensaje: 'Error al cargar el historial de pagos',
+            usuario: req.user || {},
+            esAdmin: false
         });
     }
 };

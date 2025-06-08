@@ -101,41 +101,19 @@
                         <div class="tab-pane fade show active" id="pills-edit-profile" role="tabpanel" aria-labelledby="pills-edit-profile-tab" tabindex="0">
                             <form action="#">
                                 <div class="row">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-12">
                                         <div class="mb-20">
-                                            <label for="carrera" class="form-label fw-semibold text-primary-light text-sm mb-8">Servicio <span class="text-danger-600"></span></label>
+                                            <h6 class="text-md text-primary-light mb-16">Mis Facturas</h6>
+                                            <div id="facturasList" class="mt-3">
+                                                <!-- Las facturas se cargarán aquí dinámicamente -->
+                                            </div>
+                                            <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#vincularServicioModal">
+                                                <i class="fas fa-plus"></i> Vincular Nuevo Servicio
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-
-                            <!-- Pestaña de Servicios -->
-                <div class="tab-pane fade show active" id="pills-servicios" role="tabpanel" aria-labelledby="pills-servicios-tab">
-                    <div class="card">
-                      <div class="card-body">
-                        <div id="serviciosVinculados">
-                          <% if (usuario.UsuarioServices && usuario.UsuarioServices.length > 0) { %>
-                            <% usuario.UsuarioServices.forEach(servicio => { %>
-                              <div class="servicio-item mb-3 p-3 border rounded">
-                                <h6 class="mb-2"><%= servicio.PayService.nombre %></h6>
-                                <p class="mb-1">Número de Factura: <%= servicio.numero_cuenta %></p>
-                                <p class="mb-1">Estado: <span class="badge bg-<%= servicio.estado === 'pagado' ? 'success' : servicio.estado === 'pendiente' ? 'warning' : 'danger' %>">
-                                  <%= servicio.estado.charAt(0).toUpperCase() + servicio.estado.slice(1) %>
-                                </span></p>
-                                <p class="mb-1">Monto: C$ <%= servicio.monto %></p>
-                                <p class="mb-0">Vencimiento: <%= new Date(servicio.fecha_vencimiento).toLocaleDateString() %></p>
-                              </div>
-                            <% }); %>
-                          <% } else { %>
-                            <p class="text-muted">No hay servicios vinculados</p>
-                          <% } %>
-                        </div>
-                        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#vincularServicioModal">
-                          <i class="fas fa-plus"></i> Vincular Nuevo Servicio
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                         </div>
 
                         
@@ -200,39 +178,50 @@
 <!-- Modal para Vincular Servicio -->
 <div class="modal fade" id="vincularServicioModal" tabindex="-1" aria-labelledby="vincularServicioModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="vincularServicioModalLabel">Vincular Nuevo Servicio</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="vincularServicioForm">
-            <div class="mb-3">
-              <label for="servicio" class="form-label">Servicio</label>
-              <select class="form-select" id="servicio" required>
-                <option value="">Seleccione un servicio</option>
-                <option value="1">Enacal</option>
-                <option value="2">Dissnorte-Disur</option>
-                <option value="3">INNS</option>
-              </select>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vincularServicioModalLabel">Vincular Nuevo Servicio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="mb-3">
-              <label for="numeroFactura" class="form-label">Número de Factura</label>
-              <input type="text" class="form-control" id="numeroFactura" required placeholder="Ingrese el número de factura">
+            <div class="modal-body">
+                <form id="vincularServicioForm">
+                    <div class="mb-3">
+                        <label for="servicio" class="form-label">Servicio</label>
+                        <select class="form-select" id="servicio" required>
+                            <option value="">Seleccione un servicio</option>
+                            <% if (typeof servicios !== 'undefined' && servicios.length > 0) { %>
+                                <% servicios.forEach(servicio => { %>
+                                    <option value="<%= servicio.id %>">
+                                        <%= servicio.nombre %>
+                                    </option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numeroFactura" class="form-label">Número de Factura</label>
+                        <input type="text" class="form-control" id="numeroFactura" required placeholder="Ingrese el número de factura">
+                    </div>
+                    <div id="facturaInfo"></div>
+                    <div id="confirmarSection" style="display: none;">
+                        <div class="alert alert-info mt-3">
+                            <p>¿Desea vincular este servicio a su cuenta?</p>
+                            <button type="button" class="btn btn-success" id="confirmarVinculacion">Confirmar Vinculación</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-          </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardarServicio">Buscar Factura</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" id="guardarServicio">Buscar Factura</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 <%- include('components/scripts') %>
-<script src="/js/uploadprofileimage.js"></script>
-<script src="/js/changesprofileinfo.js"></script>
-<script src="/js/vincularservicio_pay.js"></script>
+<script src="/js//uploadprofileimage.js"></script>
+<script src="/js//changesprofileinfo.js"></script>
+<script src="/js//vincularservicio_pay.js"></script>
 </body>
 </html>
 

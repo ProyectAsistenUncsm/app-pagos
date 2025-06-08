@@ -1,4 +1,4 @@
-import { UsuarioService } from '../models/indexModel.js';
+import { UsuarioService, PayService, Factura } from '../models/indexModel.js';
 import User from '../models/userModel.js'; // Import the default export 'User'
 import bcrypt from 'bcryptjs';
 
@@ -194,5 +194,177 @@ export const actualizarEstadoServicio = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error al actualizar el estado' });
+  }
+};
+
+// Mostrar perfil del usuario
+export const mostrarPerfil = async (req, res) => {
+    try {
+        // Verificar si es una petición AJAX/JSON
+        const isJsonRequest = req.xhr || req.headers.accept.includes('application/json');
+
+        // Obtener datos del usuario
+        const usuario = await User.findByPk(req.user.id);
+        if (!usuario) {
+            if (isJsonRequest) {
+                return res.status(404).json({
+                    success: false,
+                    mensaje: 'Usuario no encontrado'
+                });
+            }
+            return res.status(404).render('error', {
+                mensaje: 'Usuario no encontrado',
+                usuario: null
+            });
+        }
+
+        // Obtener servicios disponibles
+        const servicios = await PayService.findAll({
+            attributes: ['id', 'nombre', 'descripcion']
+        });
+
+        // Obtener facturas del usuario
+        const facturas = await Factura.findAll({
+            where: { usuario_id: req.user.id },
+            include: [{
+                model: PayService,
+                attributes: ['nombre', 'descripcion']
+            }],
+            attributes: [
+                'id',
+                'pay_service_id',
+                'monto',
+                'fecha_emision',
+                'fecha_vencimiento',
+                'estado',
+                'createdAt',
+                'updatedAt'
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+
+        // Preparar datos del usuario para la vista
+        const usuarioData = {
+            id: usuario.id,
+            nombre: usuario.nombre,
+            correo: usuario.correo,
+            telefono: usuario.telefono || 'No especificado',
+            cedula: usuario.cedula || 'No especificada',
+            fecha_registro: usuario.fecha_registro ? new Date(usuario.fecha_registro).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) : 'No especificada',
+            image_profile: usuario.image_profile
+        };
+
+        // Si es una petición JSON, devolver JSON
+        if (isJsonRequest) {
+            return res.json({
+                success: true,
+                usuario: usuarioData,
+                servicios,
+                facturas
+            });
+        }
+
+        // Si es una petición normal, renderizar la vista
+        res.render('perfil', {
+            usuario: usuarioData,
+            servicios,
+            facturas
+        });
+    } catch (error) {
+        console.error('Error al cargar perfil:', error);
+        
+        // Si es una petición JSON, devolver error en JSON
+        if (req.xhr || req.headers.accept.includes('application/json')) {
+            return res.status(500).json({
+                success: false,
+                mensaje: 'Error al cargar el perfil',
+                error: error.message
+            });
+        }
+
+        // Si es una petición normal, renderizar página de error
+        res.status(500).render('error', {
+            mensaje: 'Error al cargar el perfil',
+            usuario: req.user
+        });
+    }
+};
+
+// Vincular servicio
+export const vincularServicio = async (req, res) => {
+    try {
+        const { pay_service_id, numero_cuenta } = req.body;
+
+        // Verificar si ya existe una factura para este servicio y número de cuenta
+        const facturaExistente = await Factura.findOne({
+            where: {
+                pay_service_id,
+                numero_cuenta
+            },
+            include: [{
+                model: PayService,
+                attributes: ['nombre']
+            }]
+        });
+
+        if (facturaExistente) {
+            return res.json({
+                success: true,
+                factura: facturaExistente
+            });
+        }
+
+        res.json({
+            success: false,
+            mensaje: 'No se encontró ninguna factura con ese número de cuenta'
+        });
+    } catch (error) {
+        console.error('Error al vincular servicio:', error);
+        res.status(500).json({
+            success: false,
+            mensaje: 'Error al procesar la solicitud'
+        });
+    }
+};
+
+// Confirmar vinculación
+export const confirmarVinculacion = async (req, res) => {
+    try {
+        const { pay_service_id, numero_cuenta } = req.body;
+
+        // Verificar si ya existe una factura para este servicio y número de cuenta
+        const facturaExistente = await Factura.findOne({
+            where: {
+                pay_service_id,
+                numero_cuenta
+            }
+        });
+
+        if (!facturaExistente) {
+            return res.json({
+                success: false,
+                mensaje: 'No se encontró la factura'
+            });
+        }
+
+        // Actualizar la factura con el ID del usuario
+        await facturaExistente.update({
+            usuario_id: req.user.id
+        });
+
+        res.json({
+            success: true,
+            mensaje: 'Servicio vinculado exitosamente'
+        });
+    } catch (error) {
+        console.error('Error al confirmar vinculación:', error);
+        res.status(500).json({
+            success: false,
+            mensaje: 'Error al procesar la solicitud'
+        });
   }
 };

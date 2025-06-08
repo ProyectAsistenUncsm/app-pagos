@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../config/db.js';
+import PayService from './payService.js';
 
 class Factura extends Model {}
 
@@ -9,13 +10,21 @@ Factura.init({
         primaryKey: true,
         autoIncrement: true
     },
-    usuario_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     pay_service_id: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: 'pay_services',
+            key: 'id'
+        }
+    },
+    usuario_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'usuarios',
+            key: 'id'
+        }
     },
     monto: {
         type: DataTypes.DECIMAL(10, 2),
@@ -45,6 +54,12 @@ Factura.init({
     modelName: 'Factura',
     tableName: 'facturas',
     timestamps: true
+});
+
+// Relaciones
+Factura.belongsTo(PayService, {
+    foreignKey: 'pay_service_id',
+    as: 'PayService'
 });
 
 export default Factura; 

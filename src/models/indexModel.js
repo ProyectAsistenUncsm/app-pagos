@@ -1,6 +1,6 @@
 import { sequelize } from '../../config/db.js';
 import User from './userModel.js';
-import PayService from './PayService.js';
+import PayService from './payService.js';
 import PayServicesData from './PayServicesData.js';
 import UsuarioService from './UsuarioService.js';
 import Factura from './Factura.js';

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+    <title>Panel Administrador</title>
+<head>
+  <meta charset="UTF-8">
+  <%- include('partials/header') %>
+  <%- include('components/sidebar') %>
+</head>
+<body>
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+    <%- include('components/scripts') %>
+    <div class="dashboard-main-body">
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center">Crear Nueva Factura</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="facturaForm" action="/admin/facturas/crear" method="POST">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="usuario_id" class="form-label">ID del Usuario</label>
+                                        <input type="number" class="form-control" id="usuario_id" name="usuario_id" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="pay_service_id" class="form-label">Servicio</label>
+                                        <select class="form-select" id="pay_service_id" name="pay_service_id" required>
+                                            <option value="">Seleccione un servicio</option>
+                                            <% if (typeof servicios !== 'undefined' && servicios.length > 0) { %>
+                                                <% servicios.forEach(servicio => { %>
+                                                    <option value="<%= servicio.id %>" data-descripcion="<%= servicio.descripcion %>">
+                                                        <%= servicio.nombre %>
+                                                    </option>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <option value="" disabled>No hay servicios disponibles</option>
+                                            <% } %>
+                                        </select>
+                                        <small class="form-text text-muted" id="servicioDescripcion"></small>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="monto" class="form-label">Monto</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control" id="monto" name="monto" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="estado" class="form-label">Estado</label>
+                                        <select class="form-select" id="estado" name="estado" required>
+                                            <option value="pendiente">Pendiente</option>
+                                            <option value="pagado">Pagado</option>
+                                            <option value="vencido">Vencido</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="fecha_emision" class="form-label">Fecha de Emisión</label>
+                                        <input type="datetime-local" class="form-control" id="fecha_emision" name="fecha_emision" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="fecha_vencimiento" class="form-label">Fecha de Vencimiento</label>
+                                        <input type="datetime-local" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" required>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <div class="alert alert-info" role="alert">
+                                            <strong>ID de Factura:</strong> 
+                                            <span id="idFacturaPreview">Se generará automáticamente al crear la factura</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-primary">Crear Factura</button>
+                                    <a href="/admin/" class="btn btn-secondary ms-2">Cancelar</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </main>
+
+<script src="/js/admin/crearfactura.js"></script>
+</body>
+</html>
+
+

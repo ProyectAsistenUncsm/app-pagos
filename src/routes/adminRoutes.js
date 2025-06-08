@@ -3,6 +3,14 @@ import User from '../models/userModel.js';
 import { verificarToken, esAdmin } from '../middleware/authMiddleware.js';
 import bcrypt from 'bcrypt';
 import { obtenerHistorialPagos } from '../controllers/paymentController.js';
+import {
+    mostrarFormularioFactura,
+    crearFactura,
+    obtenerFacturas,
+    obtenerFacturaPorId,
+    actualizarFactura,
+    eliminarFactura
+} from '../controllers/facturaController.js';
 
 const router = Router();
 
@@ -16,6 +24,15 @@ router.get('/usuarios', verificarToken, esAdmin, (req, res) => {
 
 // Ruta para la vista de historial
 router.get('/historial', verificarToken, esAdmin, obtenerHistorialPagos);
+
+// Rutas para facturas (ordenadas de más específica a más general)
+router.get('/facturas/crear', verificarToken, esAdmin, mostrarFormularioFactura);
+router.post('/facturas/crear', verificarToken, esAdmin, crearFactura);
+router.get('/factura', verificarToken, esAdmin, mostrarFormularioFactura);
+router.get('/facturas', verificarToken, esAdmin, obtenerFacturas);
+router.get('/facturas/:id', verificarToken, esAdmin, obtenerFacturaPorId);
+router.put('/facturas/:id', verificarToken, esAdmin, actualizarFactura);
+router.delete('/facturas/:id', verificarToken, esAdmin, eliminarFactura);
 
 // API Routes
 // Obtener todos los usuarios administradores

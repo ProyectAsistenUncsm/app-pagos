@@ -1,38 +1,108 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const vincularForm = document.getElementById('vincularForm');
-    const confirmarForm = document.getElementById('confirmarForm');
+    const vincularForm = document.getElementById('vincularServicioForm');
     const facturaInfo = document.getElementById('facturaInfo');
     const confirmarSection = document.getElementById('confirmarSection');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
+    const facturasList = document.getElementById('facturasList');
+    const guardarServicio = document.getElementById('guardarServicio');
+    const confirmarVinculacion = document.getElementById('confirmarVinculacion');
+    const modal = document.getElementById('vincularServicioModal');
 
-    if (vincularForm) {
-        vincularForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            console.log('Formulario de vinculación enviado');
+    // Función para manejar errores de respuesta
+    const handleResponseError = async (response) => {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            throw new Error(errorData.mensaje || 'Error en la solicitud');
+        }
+        throw new Error('Error en la solicitud');
+    };
+
+    // Cargar servicios vinculados y facturas
+    const cargarDatos = async () => {
+        try {
+            const response = await fetch('/user/perfil', {
+                headers: {
+                    'Accept': 'application/json'
+                },
+                credentials: 'include'
+            });
             
-            const formData = new FormData(this);
-            const data = {
-                pay_service_id: formData.get('pay_service_id'),
-                numero_cuenta: formData.get('numero_cuenta')
-            };
+            if (!response.ok) {
+                await handleResponseError(response);
+            }
 
-            console.log('Datos a enviar:', data);
+            const data = await response.json();
+            
+            if (data.success) {
+                if (!data.facturas || data.facturas.length === 0) {
+                    facturasList.innerHTML = `
+                        <div class="alert alert-info">
+                            No tienes facturas vinculadas. Haz clic en "Vincular Nuevo Servicio" para comenzar.
+                        </div>
+                    `;
+                } else {
+                    facturasList.innerHTML = data.facturas.map(factura => `
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">${factura.PayService.nombre}</h5>
+                                <p class="card-text">
+                                    <strong>ID:</strong> ${factura.id}<br>
+                                    <strong>Monto:</strong> $${factura.monto}<br>
+                                    <strong>Estado:</strong> ${factura.estado}<br>
+                                    <strong>Fecha de Emisión:</strong> ${new Date(factura.fecha_emision).toLocaleDateString()}<br>
+                                    <strong>Fecha de Vencimiento:</strong> ${new Date(factura.fecha_vencimiento).toLocaleDateString()}
+                                </p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } else {
+                throw new Error(data.mensaje || 'Error al cargar los datos');
+            }
+        } catch (error) {
+            console.error('Error al cargar datos:', error);
+            if (facturasList) {
+                facturasList.innerHTML = `
+                    <div class="alert alert-danger">
+                        ${error.message || 'Error al cargar las facturas. Por favor, intente nuevamente.'}
+                    </div>
+                `;
+            }
+        }
+    };
+
+    // Cargar datos iniciales
+    cargarDatos();
+
+    if (guardarServicio) {
+        guardarServicio.addEventListener('click', async function() {
+            const servicio = document.getElementById('servicio').value;
+            const numeroFactura = document.getElementById('numeroFactura').value;
+
+            if (!servicio || !numeroFactura) {
+                alert('Por favor, complete todos los campos');
+                return;
+            }
 
             try {
                 const response = await fetch('/user/vincular-servicio', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     credentials: 'include',
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({
+                        pay_service_id: servicio,
+                        numero_cuenta: numeroFactura
+                    })
                 });
 
-                console.log('Respuesta recibida:', response);
+                if (!response.ok) {
+                    await handleResponseError(response);
+                }
 
                 const result = await response.json();
-                console.log('Datos de respuesta:', result);
 
                 if (result.success) {
                     facturaInfo.innerHTML = `
@@ -40,11 +110,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             <h4>Factura encontrada</h4>
                             <p>Servicio: ${result.factura.PayService.nombre}</p>
                             <p>Número de cuenta: ${result.factura.numero_cuenta}</p>
-                            <p>Monto: ${result.factura.monto}</p>
+                            <p>Monto: $${result.factura.monto}</p>
                         </div>
                     `;
                     confirmarSection.style.display = 'block';
-                    errorMessage.style.display = 'none';
+                    guardarServicio.style.display = 'none';
                 } else {
                     facturaInfo.innerHTML = `
                         <div class="alert alert-warning">
@@ -57,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error:', error);
                 facturaInfo.innerHTML = `
                     <div class="alert alert-danger">
-                        Error al procesar la solicitud
+                        ${error.message || 'Error al procesar la solicitud'}
                     </div>
                 `;
                 confirmarSection.style.display = 'none';
@@ -65,51 +135,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if (confirmarForm) {
-        confirmarForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            console.log('Formulario de confirmación enviado');
-            
-            const formData = new FormData(this);
-            const data = {
-                pay_service_id: formData.get('pay_service_id'),
-                numero_cuenta: formData.get('numero_cuenta')
-            };
-
-            console.log('Datos a enviar:', data);
+    if (confirmarVinculacion) {
+        confirmarVinculacion.addEventListener('click', async function() {
+            const servicio = document.getElementById('servicio').value;
+            const numeroFactura = document.getElementById('numeroFactura').value;
 
             try {
-                const response = await fetch('/users/confirmar-vinculacion', {
+                const response = await fetch('/user/confirmar-vinculacion', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     credentials: 'include',
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({
+                        pay_service_id: servicio,
+                        numero_cuenta: numeroFactura
+                    })
                 });
 
-                console.log('Respuesta recibida:', response);
+                if (!response.ok) {
+                    await handleResponseError(response);
+                }
 
                 const result = await response.json();
-                console.log('Datos de respuesta:', result);
 
                 if (result.success) {
-                    successMessage.textContent = result.mensaje;
-                    successMessage.style.display = 'block';
-                    errorMessage.style.display = 'none';
-                    confirmarSection.style.display = 'none';
-                    vincularForm.reset();
-                    facturaInfo.innerHTML = '';
+                    alert(result.mensaje);
+                    // Cerrar el modal
+                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                    modalInstance.hide();
+                    // Recargar los datos
+                    cargarDatos();
                 } else {
-                    errorMessage.textContent = result.mensaje;
-                    errorMessage.style.display = 'block';
-                    successMessage.style.display = 'none';
+                    alert(result.mensaje || 'Error al vincular el servicio');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                errorMessage.textContent = 'Error al procesar la solicitud';
-                errorMessage.style.display = 'block';
-                successMessage.style.display = 'none';
+                alert(error.message || 'Error al procesar la solicitud');
             }
         });
     }
