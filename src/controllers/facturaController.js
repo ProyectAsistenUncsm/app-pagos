@@ -1,5 +1,5 @@
 import Factura from '../models/Factura.js';
-import PayService from '../models/payService.js';
+import PayService from '../models/PayService.js';
 
 // Función para generar ID de factura
 const generarIdFactura = async (pay_service_id) => {
