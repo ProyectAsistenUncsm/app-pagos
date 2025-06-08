@@ -1,6 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../config/db.js';
-import PayService from './payService.js';
+import PayService from './PayService.js';
 
 class Factura extends Model {}
 
