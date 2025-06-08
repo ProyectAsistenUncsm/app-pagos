@@ -2,6 +2,7 @@ import { Router } from 'express';
 import User from '../models/userModel.js';
 import { verificarToken, esAdmin } from '../middleware/authMiddleware.js';
 import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { obtenerHistorialPagos } from '../controllers/paymentController.js';
 
 const router = Router();
