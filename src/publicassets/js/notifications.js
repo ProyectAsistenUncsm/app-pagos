@@ -155,6 +155,12 @@ async function consultarFacturas() {
         const data = await response.json();
         
         if (data.success && data.facturas) {
+            // Limpiar el contenedor de notificaciones solo en la página de notificaciones
+            const contenedorNotificaciones = document.getElementById('notificaciones');
+            if (contenedorNotificaciones) {
+                contenedorNotificaciones.innerHTML = '';
+            }
+
             // Procesar todas las facturas
             data.facturas.forEach(factura => {
                 // Verificar si la factura ya fue procesada
@@ -282,15 +288,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Consultar facturas inicialmente solo si estamos en la página de notificaciones
-    if (document.getElementById('notificaciones')) {
-        consultarFacturas();
-    }
+    // Consultar facturas inicialmente en todas las páginas
+    consultarFacturas();
 });
 
-// Consultar facturas cada 30 segundos solo si estamos en la página de notificaciones
-setInterval(() => {
-    if (document.getElementById('notificaciones')) {
-        consultarFacturas();
-    }
-}, 30000);
+// Consultar facturas cada 30 segundos en todas las páginas
+setInterval(consultarFacturas, 30000);
