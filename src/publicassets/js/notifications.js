@@ -132,13 +132,12 @@ function mostrarNotificacionPagina(titulo, mensaje, tipo = window.TIPOS_NOTIFICA
                 <p>${mensaje}</p>
             </div>
         </div>
-        <button class="cerrar-notificacion">&times;</button>
+        <button class="cerrar-notificacion" onclick="this.parentElement.remove()">&times;</button>
     `;
 
     const contenedor = document.getElementById('notificaciones');
     if (contenedor) {
         contenedor.insertBefore(notificacion, contenedor.firstChild);
-        
     }
 }
 
@@ -151,16 +150,16 @@ function mostrarNotificacion(titulo, mensaje, tipo = window.TIPOS_NOTIFICACION.I
 // Función para consultar facturas y mostrar notificaciones
 async function consultarFacturas() {
     try {
+        // Verificar si estamos en la página de perfil
+        const esPaginaPerfil = window.location.pathname.includes('/perfil');
+        if (esPaginaPerfil) {
+            return; // No mostrar notificaciones en la página de perfil
+        }
+
         const response = await fetch('/service/notification/facturas');
         const data = await response.json();
         
         if (data.success && data.facturas) {
-            // Limpiar el contenedor de notificaciones solo en la página de notificaciones
-            const contenedorNotificaciones = document.getElementById('notificaciones');
-            if (contenedorNotificaciones) {
-                contenedorNotificaciones.innerHTML = '';
-            }
-
             // Procesar todas las facturas
             data.facturas.forEach(factura => {
                 // Verificar si la factura ya fue procesada
@@ -208,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const notificacionesPagos = document.getElementById('notificacionesPagos');
         const notificacionesServicios = document.getElementById('notificacionesServicios');
+        const esPaginaPerfil = window.location.pathname.includes('/perfil');
 
         // Cargar preferencias guardadas
         if (notificacionesPagos) {
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Escuchar eventos de pago
         window.socket.on('pagoRealizado', (data) => {
-            if (!notificacionesPagos || notificacionesPagos.checked) {
+            if (!esPaginaPerfil && (!notificacionesPagos || notificacionesPagos.checked)) {
                 mostrarNotificacion(
                     'Pago Exitoso',
                     `Se ha procesado tu pago de $${data.monto} para el servicio ${data.servicio_nombre}`,
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         window.socket.on('pagoFallido', (data) => {
-            if (!notificacionesPagos || notificacionesPagos.checked) {
+            if (!esPaginaPerfil && (!notificacionesPagos || notificacionesPagos.checked)) {
                 mostrarNotificacion(
                     'Error en el Pago',
                     `No se pudo procesar tu pago: ${data.mensaje}`,
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Escuchar eventos de facturas
         window.socket.on('nuevaFactura', (data) => {
-            if (!notificacionesServicios || notificacionesServicios.checked) {
+            if (!esPaginaPerfil && (!notificacionesServicios || notificacionesServicios.checked)) {
                 mostrarNotificacion(
                     'Nueva Factura',
                     `Se ha generado una nueva factura para ${data.servicio_nombre} por un monto de $${data.monto}`,
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Escuchar eventos de servicio
         window.socket.on('servicioActualizado', (data) => {
-            if (!notificacionesServicios || notificacionesServicios.checked) {
+            if (!esPaginaPerfil && (!notificacionesServicios || notificacionesServicios.checked)) {
                 mostrarNotificacion(
                     'Estado de Servicio Actualizado',
                     `El servicio ${data.servicio_nombre} ha cambiado a ${data.estado}`,
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         window.socket.on('servicioVinculado', (data) => {
-            if (!notificacionesServicios || notificacionesServicios.checked) {
+            if (!esPaginaPerfil && (!notificacionesServicios || notificacionesServicios.checked)) {
                 mostrarNotificacion(
                     'Servicio Vinculado',
                     `Has vinculado exitosamente el servicio ${data.servicio_nombre}`,
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         window.socket.on('servicioDesvinculado', (data) => {
-            if (!notificacionesServicios || notificacionesServicios.checked) {
+            if (!esPaginaPerfil && (!notificacionesServicios || notificacionesServicios.checked)) {
                 mostrarNotificacion(
                     'Servicio Desvinculado',
                     `Has desvinculado el servicio ${data.servicio_nombre}`,
@@ -288,9 +288,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Consultar facturas inicialmente en todas las páginas
-    consultarFacturas();
+    // Consultar facturas inicialmente solo si no estamos en la página de perfil
+    if (!window.location.pathname.includes('/perfil')) {
+        consultarFacturas();
+    }
 });
 
-// Consultar facturas cada 30 segundos en todas las páginas
-setInterval(consultarFacturas, 30000);
+// Consultar facturas cada 30 segundos solo si no estamos en la página de perfil
+if (!window.location.pathname.includes('/perfil')) {
+    setInterval(consultarFacturas, 30000);
+}

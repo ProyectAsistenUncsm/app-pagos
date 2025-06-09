@@ -18,6 +18,18 @@ function guardarCambios() {
     console.log('Nueva contraseña:', nuevaContrasena);
     console.log('Confirmar contraseña:', confirmarContrasena);
     
+// Validar que las contraseñas coincidan
+if (nuevaContrasena !== confirmarContrasena) {
+    window.mostrarNotificacion('Error', 'Las contraseñas no coinciden', 'error');
+    return;
+}
+
+// Validar longitud mínima
+if (nuevaContrasena.length < 6) {
+    window.mostrarNotificacion('Error', 'La contraseña debe tener al menos 6 caracteres', 'error');
+    return;
+}
+    
     // Array para almacenar las promesas
     const promesas = [];
 

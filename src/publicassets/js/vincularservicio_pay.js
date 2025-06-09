@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const result = await response.json();
 
                 if (result.success) {
-                    alert(result.mensaje);
+                    //alert(result.mensaje);
                     // Cerrar el modal
                     const modalInstance = bootstrap.Modal.getInstance(modal);
                     modalInstance.hide();
