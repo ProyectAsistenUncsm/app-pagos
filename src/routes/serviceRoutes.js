@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { obtenerServicios, vincularServicio, desvincularServicio } from '../controllers/serviceController.js';
 import { verificarToken } from '../middleware/authMiddleware.js';
+import { obtenerNotificacionesFacturas } from '../controllers/facturaController.js';
 
 const router = Router();
 
@@ -15,6 +16,9 @@ router.get('/notification', verificarToken, (req, res) => {
         activePage: 'notification'
     });
 });
+
+// Ruta para obtener notificaciones de facturas
+router.get('/notification/facturas', verificarToken, obtenerNotificacionesFacturas);
 
 // Ruta para vincular un servicio a un usuario
 router.post('/vincular', verificarToken, vincularServicio);

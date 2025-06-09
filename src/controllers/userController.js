@@ -368,3 +368,101 @@ export const confirmarVinculacion = async (req, res) => {
         });
   }
 };
+
+// Crear nueva factura
+export const crearFactura = async (req, res) => {
+    try {
+        const { pay_service_id, numero_cuenta } = req.body;
+        const usuarioId = req.user.id;
+
+        // Obtener información del servicio
+        const servicio = await PayService.findByPk(pay_service_id);
+        if (!servicio) {
+            return res.status(404).json({
+                success: false,
+                mensaje: 'Servicio no encontrado'
+            });
+        }
+
+        // Generar un monto aleatorio entre 100 y 1000
+        const monto = Math.floor(Math.random() * (1000 - 100 + 1)) + 100;
+
+        // Crear la nueva factura
+        const nuevaFactura = await Factura.create({
+            usuario_id: usuarioId,
+            pay_service_id,
+            numero_cuenta,
+            monto,
+            estado: 'pendiente',
+            fecha_emision: new Date(),
+            fecha_vencimiento: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 días desde ahora
+        });
+
+        // Incluir la información del servicio en la respuesta
+        const facturaConServicio = await Factura.findByPk(nuevaFactura.id, {
+            include: [{
+                model: PayService,
+                attributes: ['nombre']
+            }]
+        });
+
+        res.json({
+            success: true,
+            factura: facturaConServicio
+        });
+    } catch (error) {
+        console.error('Error al crear factura:', error);
+        res.status(500).json({
+            success: false,
+            mensaje: 'Error al crear la factura'
+        });
+    }
+};
+
+// Confirmar factura
+export const confirmarFactura = async (req, res) => {
+    try {
+        const usuarioId = req.user.id;
+
+        // Obtener la última factura creada por el usuario
+        const ultimaFactura = await Factura.findOne({
+            where: {
+                usuario_id: usuarioId,
+                estado: 'pendiente'
+            },
+            order: [['createdAt', 'DESC']],
+            include: [{
+                model: PayService,
+                attributes: ['nombre']
+            }]
+        });
+
+        if (!ultimaFactura) {
+            return res.json({
+                success: false,
+                mensaje: 'No se encontró ninguna factura pendiente'
+            });
+        }
+
+        // Emitir evento de nueva factura
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('nuevaFactura', {
+                usuario_id: usuarioId,
+                servicio_nombre: ultimaFactura.PayService.nombre,
+                monto: ultimaFactura.monto
+            });
+        }
+
+        res.json({
+            success: true,
+            mensaje: 'Factura creada exitosamente'
+        });
+    } catch (error) {
+        console.error('Error al confirmar factura:', error);
+        res.status(500).json({
+            success: false,
+            mensaje: 'Error al confirmar la factura'
+        });
+    }
+};

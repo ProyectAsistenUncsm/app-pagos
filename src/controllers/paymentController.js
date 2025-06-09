@@ -92,6 +92,19 @@ export const realizarPago = async (req, res) => {
             }
         );
 
+        // Obtener el servicio para la notificación
+        const servicio = await PayService.findByPk(pay_service_id);
+
+        // Emitir notificación de pago exitoso
+        if (io) {
+            io.emit('pagoRealizado', {
+                usuario_id: req.user.id,
+                servicio_nombre: servicio.nombre,
+                monto: monto,
+                fecha: new Date()
+            });
+        }
+
         res.json({ 
             success: true,
             mensaje: 'Pago realizado exitosamente',
@@ -99,6 +112,15 @@ export const realizarPago = async (req, res) => {
         });
     } catch (error) {
         console.error('Error al realizar pago:', error);
+        
+        // Emitir notificación de error
+        if (io) {
+            io.emit('pagoFallido', {
+                usuario_id: req.user.id,
+                mensaje: error.message
+            });
+        }
+
         res.status(500).json({ 
             success: false,
             mensaje: 'Error al procesar el pago',

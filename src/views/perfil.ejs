@@ -175,12 +175,12 @@
     </div>
 </div>
 </main>
-<!-- Modal para Vincular Servicio -->
+<!-- Modal para Crear Factura -->
 <div class="modal fade" id="vincularServicioModal" tabindex="-1" aria-labelledby="vincularServicioModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="vincularServicioModalLabel">Vincular Nuevo Servicio</h5>
+                <h5 class="modal-title" id="vincularServicioModalLabel">Crear Nueva Factura</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -199,29 +199,29 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="numeroFactura" class="form-label">Número de Factura</label>
-                        <input type="text" class="form-control" id="numeroFactura" required placeholder="Ingrese el número de factura">
+                        <label for="numeroFactura" class="form-label">Número de Cuenta</label>
+                        <input type="text" class="form-control" id="numeroFactura" required placeholder="Ingrese el número de cuenta">
                     </div>
                     <div id="facturaInfo"></div>
                     <div id="confirmarSection" style="display: none;">
                         <div class="alert alert-info mt-3">
-                            <p>¿Desea vincular este servicio a su cuenta?</p>
-                            <button type="button" class="btn btn-success" id="confirmarVinculacion">Confirmar Vinculación</button>
+                            <p>¿Desea crear esta factura?</p>
+                            <button type="button" class="btn btn-success" id="confirmarVinculacion">Confirmar Creación</button>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="guardarServicio">Buscar Factura</button>
+                <button type="button" class="btn btn-primary" id="guardarServicio">Crear Factura</button>
             </div>
         </div>
     </div>
 </div>
 <%- include('components/scripts') %>
-<script src="/js//uploadprofileimage.js"></script>
-<script src="/js//changesprofileinfo.js"></script>
-<script src="/js//vincularservicio_pay.js"></script>
+<script src="/js/uploadprofileimage.js"></script>
+<script src="/js/changesprofileinfo.js"></script>
+<script src="/js/vincularservicio_pay.js"></script>
 </body>
 </html>
 

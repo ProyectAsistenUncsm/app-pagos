@@ -74,7 +74,7 @@ document.getElementById('formPago').addEventListener('submit', async (e) => {
                 'success'
             );
             
-            // Redirigir al dashboard después de 2 segundos
+            // Redirigir al index después de 2 segundos
             setTimeout(() => {
                 window.location.href = '/';
             }, 2000);

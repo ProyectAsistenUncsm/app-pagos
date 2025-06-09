@@ -6,7 +6,9 @@ import {
     cambiarContrasena,
     mostrarPerfil,
     vincularServicio,
-    confirmarVinculacion
+    confirmarVinculacion,
+    crearFactura,
+    confirmarFactura
 } from '../controllers/userController.js';
 import { logout } from '../controllers/authController.js';
 import { verificarToken } from '../middleware/authMiddleware.js';
@@ -28,6 +30,10 @@ router.post('/actualizar-perfil', verificarToken, actualizarPerfil);
 router.post('/cambiar-contrasena', verificarToken, cambiarContrasena);
 router.post('/vincular-servicio', verificarToken, vincularServicio);
 router.post('/confirmar-vinculacion', verificarToken, confirmarVinculacion);
+
+// Rutas para facturas
+router.post('/crear-factura', verificarToken, crearFactura);
+router.post('/confirmar-factura', verificarToken, confirmarFactura);
 
 export default router;
 

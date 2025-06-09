@@ -34,14 +34,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (data.success) {
-                if (!data.facturas || data.facturas.length === 0) {
+                // Filtrar solo las facturas pendientes
+                const facturasPendientes = data.facturas ? data.facturas.filter(factura => factura.estado === 'pendiente') : [];
+                
+                if (!facturasPendientes || facturasPendientes.length === 0) {
                     facturasList.innerHTML = `
                         <div class="alert alert-info">
-                            No tienes facturas vinculadas. Haz clic en "Vincular Nuevo Servicio" para comenzar.
+                            No tienes facturas pendientes. Haz clic en "Vincular Nuevo Servicio" para crear una nueva factura.
                         </div>
                     `;
                 } else {
-                    facturasList.innerHTML = data.facturas.map(factura => `
+                    facturasList.innerHTML = facturasPendientes.map(factura => `
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h5 class="card-title">${factura.PayService.nombre}</h5>
@@ -85,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch('/user/vincular-servicio', {
+                const response = await fetch('/user/crear-factura', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -107,10 +110,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.success) {
                     facturaInfo.innerHTML = `
                         <div class="alert alert-info">
-                            <h4>Factura encontrada</h4>
+                            <h4>Nueva Factura Creada</h4>
                             <p>Servicio: ${result.factura.PayService.nombre}</p>
                             <p>Número de cuenta: ${result.factura.numero_cuenta}</p>
                             <p>Monto: $${result.factura.monto}</p>
+                            <p>Fecha de vencimiento: ${new Date(result.factura.fecha_vencimiento).toLocaleDateString()}</p>
                         </div>
                     `;
                     confirmarSection.style.display = 'block';
@@ -137,21 +141,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (confirmarVinculacion) {
         confirmarVinculacion.addEventListener('click', async function() {
-            const servicio = document.getElementById('servicio').value;
-            const numeroFactura = document.getElementById('numeroFactura').value;
-
             try {
-                const response = await fetch('/user/confirmar-vinculacion', {
+                const response = await fetch('/user/confirmar-factura', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        pay_service_id: servicio,
-                        numero_cuenta: numeroFactura
-                    })
+                    credentials: 'include'
                 });
 
                 if (!response.ok) {
@@ -168,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Recargar los datos
                     cargarDatos();
                 } else {
-                    alert(result.mensaje || 'Error al vincular el servicio');
+                    alert(result.mensaje || 'Error al crear la factura');
                 }
             } catch (error) {
                 console.error('Error:', error);

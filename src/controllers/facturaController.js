@@ -1,5 +1,7 @@
 import Factura from '../models/Factura.js';
 import PayService from '../models/PayService.js';
+import { Op } from 'sequelize';
+import { io } from '../index.js';
 
 // Función para generar ID de factura
 const generarIdFactura = async (pay_service_id) => {
@@ -128,6 +130,16 @@ export const crearFactura = async (req, res) => {
                 attributes: ['nombre', 'descripcion']
             }]
         });
+
+        // Emitir notificación de nueva factura
+        if (io) {
+            io.emit('nuevaFactura', {
+                usuario_id: usuario_id,
+                servicio_nombre: servicio.nombre,
+                monto: monto,
+                fecha_vencimiento: fecha_vencimiento
+            });
+        }
 
         res.status(201).json({
             success: true,
@@ -268,6 +280,43 @@ export const eliminarFactura = async (req, res) => {
         res.status(500).json({
             success: false,
             mensaje: 'Error al eliminar la factura',
+            error: error.message
+        });
+    }
+};
+
+// Obtener notificaciones de facturas
+export const obtenerNotificacionesFacturas = async (req, res) => {
+    try {
+        const usuarioId = req.user.id;
+        
+        // Obtener facturas recientes (últimas 24 horas)
+        const fechaLimite = new Date();
+        fechaLimite.setHours(fechaLimite.getHours() - 24);
+
+        const facturas = await Factura.findAll({
+            where: {
+                usuario_id: usuarioId,
+                createdAt: {
+                    [Op.gte]: fechaLimite
+                }
+            },
+            include: [{
+                model: PayService,
+                attributes: ['nombre', 'descripcion']
+            }],
+            order: [['createdAt', 'DESC']]
+        });
+
+        res.json({
+            success: true,
+            facturas: facturas
+        });
+    } catch (error) {
+        console.error('Error al obtener notificaciones de facturas:', error);
+        res.status(500).json({
+            success: false,
+            mensaje: 'Error al obtener las notificaciones',
             error: error.message
         });
     }
