@@ -28,6 +28,30 @@
 
             <div class="card">
                 <div class="card-body">
+                    <!-- Filtros -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="fechaInicio">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fechaFin" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fechaFin">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="servicio" class="form-label">Servicio</label>
+                            <select class="form-select" id="servicio">
+                                <option value="">Todos los servicios</option>
+                                <option value="1">Enacal</option>
+                                <option value="2">Dissnorte-Disur</option>
+                                <option value="3">INSS</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button id="limpiarFiltros" class="btn btn-secondary">Limpiar Filtros</button>
+                        </div>
+                    </div>
+
                     <% if (pagos && pagos.length > 0) { %>
                         <div class="table-responsive">
                             <table class="table">
@@ -83,5 +107,8 @@
             </div>
         </div>
     </main>
+
+    <!-- Script para los filtros -->
+    <script src="/js/historial_admin.js"></script>
 </body>
 </html>

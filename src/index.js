@@ -12,6 +12,7 @@ import serviceRoutes from './routes/serviceRoutes.js';
 import { User } from './models/indexModel.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import historialRoutes from './routes/historial.js';
 import dotenv from 'dotenv';
 
 
@@ -75,6 +76,7 @@ app.use('/user', userRoutes);
 app.use('/service', serviceRoutes);
 app.use('/pay', paymentRoutes);
 app.use('/admin', adminRoutes);
+app.use('/historial', historialRoutes);
 app.use('/', indexRoutes);
 
 // 404 - Página no encontrada
