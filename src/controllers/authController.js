@@ -72,7 +72,7 @@ export const registrarUsuario = async (req, res) => {
 // Iniciar sesión de usuario
 export const loginUsuario = async (req, res) => {
   try {
-    const { correo, contrasena } = req.body;
+    const { correo, contrasena, recordar } = req.body;
 
     // Validaciones básicas
     if (!correo || !contrasena) {
@@ -93,6 +93,10 @@ export const loginUsuario = async (req, res) => {
       return res.status(400).json({ mensaje: 'Contraseña incorrecta' });
     }
 
+    // Definir la duración del token y la cookie
+    const expiresIn = recordar ? '365d' : '1h'; // 7 días si 'recordar' es true, 1 hora si no
+    const maxAge = recordar ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000; // 7 días o 1 hora en ms
+
     // Generar el token JWT
     const token = jwt.sign(
       { 
@@ -102,7 +106,7 @@ export const loginUsuario = async (req, res) => {
         rol_id: user.rol_id
       }, 
       process.env.JWT_SECRET || 'tu_clave_secreta_por_defecto', 
-      { expiresIn: '1h' }
+      { expiresIn: expiresIn }
     );
 
     // Enviar respuesta con el token
@@ -110,7 +114,7 @@ export const loginUsuario = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Solo en producción
       sameSite: 'strict',
-      maxAge: 60 * 60 * 1000 // 1 hora
+      maxAge: maxAge // Usar la duración calculada
     });
 
     res.json({ 

@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			const formData = {
 				correo: document.getElementById('correo').value,
-				contrasena: document.getElementById('password').value
+				contrasena: document.getElementById('password').value,
+				recordar: document.getElementById('rememberMe').checked
 			};
 
 			try {
@@ -32,5 +33,19 @@ document.addEventListener('DOMContentLoaded', function () {
 				alert('Error al conectar con el servidor: ' + error.message);
 			}
 		});
+
+		// Lógica para mostrar/ocultar contraseña
+		const togglePassword = document.getElementById('togglePassword');
+		const passwordInput = document.getElementById('password');
+
+		if (togglePassword && passwordInput) {
+			togglePassword.addEventListener('click', function () {
+				const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+				passwordInput.setAttribute('type', type);
+				// Cambiar el icono del ojo
+				this.querySelector('i').classList.toggle('fa-eye');
+				this.querySelector('i').classList.toggle('fa-eye-slash');
+			});
+		}
 	}
 });
