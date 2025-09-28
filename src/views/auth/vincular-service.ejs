@@ -1,0 +1,31 @@
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Vincular Servicio</title>
+</head>
+<%- include('partials/header') %>
+<%- include('components/sidebar') %>
+
+<body>
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+  </main>
+  <%- include('components/scripts') %>
+
+  <h1>Vincular un Servicio</h1>
+  <form action="/api/servicios/vincular" method="POST">
+    <label for="service_id">Servicio:</label>
+    <select name="service_id" required>
+      <option value="1">Agua</option>
+      <option value="2">Luz</option>
+      <option value="3">Seguro Social</option>
+    </select><br>
+
+    <label for="numero_cuenta">Número de Cuenta:</label>
+    <input type="text" name="numero_cuenta" required><br>
+
+    <button type="submit">Vincular</button>
+  </form>
+</body>
+<%- include('partials/footer') %>
+</html>

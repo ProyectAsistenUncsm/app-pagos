@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil</title>
+  <%- include('partials/header') %>
+  <%- include('components/sidebar') %>
+</head>
+<body>
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+
+
+
+  <div class="dashboard-main-body">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+        <h6 class="fw-semibold mb-0">Perfil de usuario</h6>
+        <ul class="d-flex align-items-center gap-2">
+            <li class="fw-medium">
+                <a href="/" class="d-flex align-items-center gap-1 hover-text-primary">
+                    <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                    Volver a Inicio
+                </a>
+            </li>
+            <li>-</li>
+            <li class="fw-medium">Vista del Prefil</li>
+        </ul>
+    </div>
+
+    <div class="row gy-4">
+    <div class="col-lg-4">
+            <div class="user-grid-card position-relative border radius-16 overflow-hidden bg-base h-100">
+                <img src="/images/user-grid/banco-central-nicaragua-grid.jpg" alt="" class="w-100 object-fit-cover">
+                <div class="pb-24 ms-16 mb-24 me-16  mt--100">
+                    <div class="text-center border border-top-0 border-start-0 border-end-0">
+                        <% if (usuario && usuario.image_profile) { %>
+                            <img src="data:image/jpeg;base64,<%= usuario.image_profile.toString('base64') %>" alt="Imagen de perfil" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                        <% } else { %>
+                            <img src="/images/user.png" alt="Imagen de perfil por defecto" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
+                        <% } %>
+                    </div>                    
+                    <div class="mt-24">
+                        <h6 class="text-xl mb-16">Información Personal</h6>
+                        <ul>
+                            <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light">ID</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.id %></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light">Nombre Completo</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.nombre %></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light">Correo</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.correo %></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light">Número de Teléfono</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.telefono || 'No especificado' %></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light">Cédula</span>
+                                <span class="w-70 text-secondary-light fw-medium">: <%= usuario.cedula || 'No especificada' %></span>
+                            </li>
+                            <li class="d-flex align-items-center gap-1 mb-12">
+                                <span class="w-30 text-md fw-semibold text-primary-light">Tipo de Usuario</span>
+                                <span class="w-70 text-secondary-light fw-medium">
+                                  <% if (usuario.rol_id === 1) { %>
+                                    <span class="badge bg-primary">Administrador</span>
+                                  <% } else { %>
+                                    <span class="badge bg-secondary">Usuario</span>
+                                  <% } %>
+                                </span>
+                              </li>
+
+                            <!-- <button type="button" class="btn rounded-pill btn-primary-600 radius-8 px-20 py-11">Cambiar foto</button> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-body p-24">
+                    <ul class="nav border-gradient-tab nav-pills mb-20 d-inline-flex" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link d-flex align-items-center px-24 active" id="pills-edit-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-edit-profile" type="button" role="tab" aria-controls="pills-edit-profile" aria-selected="true">
+                                Detalles
+                            </button>
+                        </li>
+                        
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link d-flex align-items-center px-24" id="pills-edit-profile-tab" data-bs-toggle="pill" data-bs-target="#ajuste-perfil" type="button" role="tab" aria-controls="ajuste-perfil" aria-selected="false" tabindex="-1">
+                                Ajustes generales
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-edit-profile" role="tabpanel" aria-labelledby="pills-edit-profile-tab" tabindex="0">
+                            <form action="#">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="mb-20">
+                                            <h6 class="text-md text-primary-light mb-16">Mis Facturas</h6>
+                                            <div id="facturasList" class="mt-3">
+                                                <!-- Las facturas se cargarán aquí dinámicamente -->
+                                            </div>
+                                            <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#vincularServicioModal">
+                                                <i class="fas fa-plus"></i> Vincular Nuevo Servicio
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        
+                    
+                        <div class="tab-pane fade" id="ajuste-perfil" role="tabpanel" aria-labelledby="ajuste-perfil-tab" tabindex="0">
+                            <h6 class="text-md text-primary-light mb-16">Imagen del perfil</h6>
+                            <!-- Upload Image Start -->
+                            <div class="mb-24 mt-16">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit position-absolute bottom-0 end-0 me-24 mt-16 z-1 cursor-pointer">
+                                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" hidden>
+                                        <label for="imageUpload" class="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle">
+                                            <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
+                                        </label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        <div id="imagePreview" style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden;">
+                                            <% if (usuario && usuario.image_profile) { %>
+                                                <img src="data:image/jpeg;base64,<%= usuario.image_profile.toString('base64') %>" alt="Imagen de perfil" style="width: auto; height: auto; object-fit: cover;">
+                                            <% } else { %>
+                                                <img src="/images/user.png" alt="Imagen de perfil por defecto" style="width: auto; height: auto; object-fit: cover;">
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Upload Image End -->
+
+                            <div class="mb-20">
+                                <h6 class="text-md text-primary-light mb-16">Cambiar Contraseña</h6>
+                                <label for="nueva-contrasena" class="form-label fw-semibold text-primary-light text-sm mb-8">Nueva Contraseña <span class="text-danger-600">*</span></label>
+                                <div class="position-relative">
+                                    <input type="password" class="form-control radius-8" id="nueva-contrasena" placeholder="Ingrese nueva contraseña*">
+                                    <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#nueva-contrasena"></span>
+                                </div>
+                            </div>
+                            <div class="mb-20">
+                                <label for="confirmar-contrasena" class="form-label fw-semibold text-primary-light text-sm mb-8">Confirmación Contraseña <span class="text-danger-600">*</span></label>
+                                <div class="position-relative">
+                                    <input type="password" class="form-control radius-8" id="confirmar-contrasena" placeholder="Confirmar Contraseña *">
+                                    <span class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light" data-toggle="#confirmar-contrasena"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex align-items-center justify-content-center gap-3">
+                                    <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8" onclick="cancelarCambios()">
+                                        Cancelar
+                                    </button>
+                                    <button type="button" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8" onclick="guardarCambios()">
+                                        Guardar
+                                    </button>
+                                </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+<!-- Modal para Crear Factura -->
+<div class="modal fade" id="vincularServicioModal" tabindex="-1" aria-labelledby="vincularServicioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vincularServicioModalLabel">Crear Nueva Factura</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="vincularServicioForm">
+                    <div class="mb-3">
+                        <label for="servicio" class="form-label">Servicio</label>
+                        <select class="form-select" id="servicio" required>
+                            <option value="">Seleccione un servicio</option>
+                            <% if (typeof servicios !== 'undefined' && servicios.length > 0) { %>
+                                <% servicios.forEach(servicio => { %>
+                                    <option value="<%= servicio.id %>">
+                                        <%= servicio.nombre %>
+                                    </option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numeroFactura" class="form-label">Número de Cuenta</label>
+                        <input type="text" class="form-control" id="numeroFactura" required placeholder="Ingrese el número de cuenta">
+                    </div>
+                    <div id="facturaInfo"></div>
+                    <div id="confirmarSection" style="display: none;">
+                        <div class="alert alert-info mt-3">
+                            <p>¿Desea crear esta factura?</p>
+                            <button type="button" class="btn btn-success" id="confirmarVinculacion">Confirmar Creación</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="guardarServicio">Crear Factura</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('components/scripts') %>
+<script src="/js/uploadprofileimage.js"></script>
+<script src="/js/changesprofileinfo.js"></script>
+<script src="/js/vincularservicio_pay.js"></script>
+</body>
+</html>
+
+

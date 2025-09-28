@@ -1,0 +1,8 @@
+<% layout('layouts/layout') %>
+<h2>Servicios vinculados</h2>
+<ul>
+  <% servicios.forEach(s => { %>
+    <li><%= s.nombre %> - Estado: <%= s.Usuarioservice.estado %></li>
+  <% }) %>
+</ul>
+<a href="/pagar">Realizar un pago</a>

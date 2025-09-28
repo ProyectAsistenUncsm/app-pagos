@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<%- include('partials/header') %>
+<%- include('components/sidebar') %>
+
+
+<body>
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+  </main>
+  <%- include('components/scripts') %>
+
+  
+  <h2>Registrarse</h2>
+  <form method="POST" action="/register">
+    <input type="text" name="nombre" placeholder="Nombre" required>
+    <input type="email" name="correo" placeholder="Correo" required>
+    <input type="password" name="contrasena" placeholder="Contraseña" required>
+    <input type="text" name="telefono" placeholder="Teléfono">
+    <textarea name="cedula" placeholder="Cedula"></textarea>
+    <button type="submit">Crear cuenta</button>
+  </form>
+
+</body>
+</html>
+

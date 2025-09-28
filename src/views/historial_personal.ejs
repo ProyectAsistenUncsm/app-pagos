@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial</title>
+    <%- include('partials/header') %>
+    <%- include('components/sidebar') %>
+</head>
+<body>
+    <main class="dashboard-main">
+        <%- include('components/navbar') %>
+        <%- include('components/scripts') %>
+
+        <!-- Contenido principal -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Historial de Pagos</h1>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="fechaInicio" class="form-label">Fecha Emision</label>
+                                    <input type="date" class="form-control" id="fechaInicio">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="fechaFin" class="form-label">Fecha Vencimiento</label>
+                                    <input type="date" class="form-control" id="fechaFin">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="servicio" class="form-label">Servicio</label>
+                                    <select class="form-select" id="servicio">
+                                        <option value="">Todos los servicios</option>
+                                        <option value="1">Enacal</option>
+                                        <option value="2">Disnorte-Dissur</option>
+                                        <option value="3">INSS</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de historial -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Servicio</th>
+                                            <th>Monto</th>
+                                            <th>Método de Pago</th>
+                                            <th>Referencia</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (historial && historial.length > 0) { %>
+                                            <% historial.forEach(pago => { %>
+                                                <tr>
+                                                    <td><%= new Date(pago.fecha_pago).toLocaleDateString('es-ES') %></td>
+                                                    <td><%= pago.PayService ? pago.PayService.nombre : 'Servicio no disponible' %></td>
+                                                    <td>$<%= Number(pago.monto).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></td>
+                                                    <td><%= pago.metodo_pago %></td>
+                                                    <td><%= pago.referencia %></td>
+                                                    <td>
+                                                        <span class="badge bg-<%= pago.estado === 'completado' ? 'success' : 
+                                                            pago.estado === 'pendiente' ? 'warning' : 'danger' %>">
+                                                            <%= pago.estado.charAt(0).toUpperCase() + pago.estado.slice(1) %>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="6" class="text-center">No hay registros de pagos</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts específicos para el historial -->
+    <script src="/js/historial_personal.js"></script>
+</body>
+</html>

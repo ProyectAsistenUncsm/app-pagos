@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+    <title>Panel Administrador</title>
+<head>
+  <meta charset="UTF-8">
+  <%- include('partials/header') %>
+  <%- include('components/sidebar') %>
+
+
+
+</head>
+<body>
+
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+    <%- include('components/scripts') %>
+  <div class="dashboard-main-body">
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+        <h6 class="fw-semibold mb-0">Panel Administrador</h6>
+        <ul class="d-flex align-items-center gap-2">
+            <li class="fw-medium">
+                <a href="/admin" class="d-flex align-items-center gap-1 hover-text-primary">
+                    <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                    Admin
+                </a>
+            </li>
+            <li>-</li>
+            <li class="fw-medium">General</li>
+            
+        </ul>
+    </div>
+    <div class="row gy-4">
+        <div class="col-xxl-8">
+            <div class="row gy-4">
+
+                <div class="col-xxl-4 col-sm-6">
+                    <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-1">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="mb-0 w-48-px h-48-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                                    </span>
+                                    <div>
+                                        <h6 class="fw-semibold">Usuarios</h6>
+                                    </div>
+                                </div>
+
+                                <!-- <div id="new-user-chart" class="remove-tooltip-title rounded-tooltip-value"></div> -->
+                            </div>
+                            <a href="/admin/usuarios" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                Ir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xxl-4 col-sm-6">
+                    <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-2">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                                    </span>
+                                    <div>
+                                        <h6 class="fw-semibold">Historial</h6>
+                                    </div>
+                                </div>
+
+                                <!-- <div id="active-user-chart" class="remove-tooltip-title rounded-tooltip-value"></div> -->
+                            </div>
+                            <a href="/admin/historial" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                Ir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+           
+
+                <div class="col-xxl-4 col-sm-6">
+                    <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-4">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="w-50-px h-50-px bg-cyan rounded-circle d-flex justify-content-center align-items-center">
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-semibold">Crear Factura</h6>
+                                    </div>
+                                </div>
+
+                                <!-- <div id="conversion-user-chart" class="remove-tooltip-title rounded-tooltip-value"></div> -->
+                            </div>
+                            <p class="text-sm mb-0"></p>
+                            <a href="/admin/factura" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">
+                                Ir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+        </div>
+    
+    </div>
+
+ </div>
+
+
+ 
+</body>
+
+</html>

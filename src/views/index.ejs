@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <%- include('partials/header') %>
+  <%- include('components/sidebar') %>
+
+
+
+</head>
+<body>
+
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+    <%- include('components/scripts') %>
+  <div class="dashboard-main-body">
+
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+        <h6 class="fw-semibold mb-0">Pagos Facturas</h6>
+        <ul class="d-flex align-items-center gap-2">
+            <li class="fw-medium">
+                <a href="/" class="d-flex align-items-center gap-1 hover-text-primary">
+                    <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                    Inicio
+                </a>
+            </li>
+            <li>-</li>
+            <li class="fw-medium">General</li>
+            
+        </ul>
+    </div>
+    <div class="row gy-4">
+        <div class="col-xxl-8">
+            <div class="row gy-4">
+
+                <div class="col-xxl-4 col-sm-6">
+                    <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-1">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="mb-0 w-48-px h-48-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                                        <iconify-icon icon="mdi:water" class="text-lg"></iconify-icon>
+                                    </span>
+                                    <div>
+                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Agua</span>
+                                        <h6 class="fw-semibold">ENACAL</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <% if (facturas) { %>
+                                <% const ahora = new Date(); %>
+                                <% const facturasAgua = facturas.filter(f => f.pay_service_id === 1); %>
+                                <% const facturaPendienteAgua = facturasAgua.find(f => f.estado === 'pendiente'); %>
+                                <% const hayPendienteNoVencidoAgua = facturasAgua.some(f => f.estado === 'pendiente' && new Date(f.fecha_vencimiento) >= ahora); %>
+                                <% const hayPendienteVencidoAgua = facturasAgua.some(f => f.estado === 'pendiente' && new Date(f.fecha_vencimiento) < ahora); %>
+
+                                <% if (hayPendienteNoVencidoAgua) { %>
+                                    <p class="text-sm mb-0 text-warning">Pendiente</p>
+                                    <% if (facturaPendienteAgua) { %>
+                                        <a href="/pay/<%= facturaPendienteAgua.id %>" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">Pagar</a>
+                                    <% } %>
+                                <% } else if (hayPendienteVencidoAgua) { %>
+                                    <p class="text-sm mb-0 text-danger">Vencido</p>
+                                    <% if (facturaPendienteAgua) { %>
+                                        <a href="/pay/<%= facturaPendienteAgua.id %>" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">Pagar</a>
+                                    <% } %>
+                                <% } else { %>
+                                    <p class="text-sm mb-0 text-success">Al día</p>
+                                <% } %>
+                            <% } else { %>
+                                <p class="text-sm mb-0 text-success">Al día</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xxl-4 col-sm-6">
+                    <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-2">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                                        <iconify-icon icon="mdi:lightning-bolt" class="text-lg"></iconify-icon>
+                                    </span>
+                                    <div>
+                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Luz</span>
+                                        <h6 class="fw-semibold">Disnorte-Dissur</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <% if (facturas) { %>
+                                <% const ahora = new Date(); %>
+                                <% const facturasLuz = facturas.filter(f => f.pay_service_id === 2); %>
+                                <% const facturaPendienteLuz = facturasLuz.find(f => f.estado === 'pendiente'); %>
+                                <% const hayPendienteNoVencidoLuz = facturasLuz.some(f => f.estado === 'pendiente' && new Date(f.fecha_vencimiento) >= ahora); %>
+                                <% const hayPendienteVencidoLuz = facturasLuz.some(f => f.estado === 'pendiente' && new Date(f.fecha_vencimiento) < ahora); %>
+
+                                <% if (hayPendienteNoVencidoLuz) { %>
+                                    <p class="text-sm mb-0 text-warning">Pendiente</p>
+                                    <% if (facturaPendienteLuz) { %>
+                                        <a href="/pay/<%= facturaPendienteLuz.id %>" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">Pagar</a>
+                                    <% } %>
+                                <% } else if (hayPendienteVencidoLuz) { %>
+                                    <p class="text-sm mb-0 text-danger">Vencido</p>
+                                    <% if (facturaPendienteLuz) { %>
+                                        <a href="/pay/<%= facturaPendienteLuz.id %>" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">Pagar</a>
+                                    <% } %>
+                                <% } else { %>
+                                    <p class="text-sm mb-0 text-success">Al día</p>
+                                <% } %>
+                            <% } else { %>
+                                <p class="text-sm mb-0 text-success">Al día</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xxl-4 col-sm-6">
+                    <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-4">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="w-50-px h-50-px bg-cyan rounded-circle d-flex justify-content-center align-items-center">
+                                        <iconify-icon icon="mdi:shield-check" class="text-lg"></iconify-icon>
+                                    </div>
+                                    <div>
+                                        <span class="mb-2 fw-medium text-secondary-light text-sm">Seguro Social</span>
+                                        <h6 class="fw-semibold">INSS</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <% if (facturas) { %>
+                                <% const ahora = new Date(); %>
+                                <% const facturasINSS = facturas.filter(f => f.pay_service_id === 3); %>
+                                <% const facturaPendienteINSS = facturasINSS.find(f => f.estado === 'pendiente'); %>
+                                <% const hayPendienteNoVencidoINSS = facturasINSS.some(f => f.estado === 'pendiente' && new Date(f.fecha_vencimiento) >= ahora); %>
+                                <% const hayPendienteVencidoINSS = facturasINSS.some(f => f.estado === 'pendiente' && new Date(f.fecha_vencimiento) < ahora); %>
+
+                                <% if (hayPendienteNoVencidoINSS) { %>
+                                    <p class="text-sm mb-0 text-warning">Pendiente</p>
+                                    <% if (facturaPendienteINSS) { %>
+                                        <a href="/pay/<%= facturaPendienteINSS.id %>" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">Pagar</a>
+                                    <% } %>
+                                <% } else if (hayPendienteVencidoINSS) { %>
+                                    <p class="text-sm mb-0 text-danger">Vencido</p>
+                                    <% if (facturaPendienteINSS) { %>
+                                        <a href="/pay/<%= facturaPendienteINSS.id %>" class="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8">Pagar</a>
+                                    <% } %>
+                                <% } else { %>
+                                    <p class="text-sm mb-0 text-success">Al día</p>
+                                <% } %>
+                            <% } else { %>
+                                <p class="text-sm mb-0 text-success">Al día</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <%- include('partials/header') %>
+    <%- include('components/sidebar') %>
+</head>
+<body>
+    <main class="dashboard-main">
+        <%- include('components/navbar') %>
+        <%- include('components/scripts') %>
+        <div class="dashboard-main-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+                <h6 class="fw-semibold mb-0">Error</h6>
+                <ul class="d-flex align-items-center gap-2">
+                    <li class="fw-medium">
+                        <a href="/" class="d-flex align-items-center gap-1 hover-text-primary">
+                            <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                            Volver a Inicio
+                        </a>
+                    </li>
+                    <li>-</li>
+                    <li class="fw-medium">Error</li>
+                </ul>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card p-4 shadow-2 radius-8 border input-form-light">
+                        <div class="card-body text-center">
+                            <div class="mb-4">
+                                <iconify-icon icon="mdi:alert-circle" class="text-danger" width="64" height="64"></iconify-icon>
+                            </div>
+                            <h4 class="mb-3">Ha ocurrido un error</h4>
+                            <p class="text-secondary mb-4"><%= mensaje %></p>
+                            <a href="/" class="btn btn-primary">
+                                Volver al Volver a Inicio
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 

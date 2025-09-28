@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Pagos</title>
+    <%- include('partials/header') %>
+    <%- include('components/sidebar') %>
+</head>
+<body>
+    <main class="dashboard-main">
+        <%- include('components/navbar') %>
+        <%- include('components/scripts') %>
+
+        <div class="dashboard-main-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+                <h6 class="fw-semibold mb-0">Historial de Pagos</h6>
+                <ul class="d-flex align-items-center gap-2">
+                    <li class="fw-medium">
+                        <a href="/admin" class="d-flex align-items-center gap-1 hover-text-primary">
+                            <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                            Admin
+                        </a>
+                    </li>
+                    <li>-</li>
+                    <li class="fw-medium">Historial de Pagos</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <!-- Filtros -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="fechaInicio">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fechaFin" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fechaFin">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="servicio" class="form-label">Servicio</label>
+                            <select class="form-select" id="servicio">
+                                <option value="">Todos los servicios</option>
+                                <option value="1">Enacal</option>
+                                <option value="2">Dissnorte-Disur</option>
+                                <option value="3">INSS</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button id="limpiarFiltros" class="btn btn-secondary">Limpiar Filtros</button>
+                        </div>
+                    </div>
+
+                    <% if (pagos && pagos.length > 0) { %>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <% if (typeof esAdmin !== 'undefined' && esAdmin) { %>
+                                            <th>Usuario</th>
+                                        <% } %>
+                                        <th>Servicio</th>
+                                        <th>Monto</th>
+                                        <th>Método</th>
+                                        <th>Referencia</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% pagos.forEach(pago => { %>
+                                        <tr>
+                                            <td><%= new Date(pago.fecha_pago).toLocaleDateString('es-ES', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            }) %></td>
+                                            <% if (typeof esAdmin !== 'undefined' && esAdmin) { %>
+                                                <td>
+                                                    <%= pago.User ? pago.User.nombre : 'N/A' %><br>
+                                                    <small class="text-muted"><%= pago.User ? pago.User.correo : 'N/A' %></small>
+                                                </td>
+                                            <% } %>
+                                            <td><%= pago.PayService ? pago.PayService.nombre : 'N/A' %></td>
+                                            <td>$<%= typeof pago.monto === 'number' ? pago.monto.toFixed(2) : parseFloat(pago.monto || 0).toFixed(2) %></td>
+                                            <td><%= pago.metodo_pago || 'N/A' %></td>
+                                            <td><%= pago.referencia || 'N/A' %></td>
+                                            <td>
+                                                <span class="badge bg-<%= pago.estado === 'completado' ? 'success' : 'warning' %>">
+                                                    <%= pago.estado || 'pendiente' %>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center py-5">
+                            <p class="text-muted">No hay pagos registrados</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Script para los filtros -->
+    <script src="/js/historial_admin.js"></script>
+</body>
+</html>

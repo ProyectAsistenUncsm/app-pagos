@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificaciones</title>
+  <%- include('partials/header') %>
+  <%- include('components/sidebar') %>
+  <style>
+    .notificaciones-lista {
+      max-height: 500px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+    .notificacion {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      padding: 1rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .notificacion.cerrando {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    .notificacion-contenido {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .notificacion-icono {
+      font-size: 1.5rem;
+    }
+    .notificacion-texto h4 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .notificacion-texto p {
+      margin: 0.5rem 0 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .cerrar-notificacion {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #999;
+    }
+    .notificacion.success {
+      border-left: 4px solid #28a745;
+    }
+    .notificacion.error {
+      border-left: 4px solid #dc3545;
+    }
+    .notificacion.info {
+      border-left: 4px solid #17a2b8;
+    }
+    .notificacion.warning {
+      border-left: 4px solid #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <main class="dashboard-main">
+    <%- include('components/navbar') %>
+
+        <div class="dashboard-main-body">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+                    <h6 class="fw-semibold mb-0">Notificaciones</h6>
+                <ul class="d-flex align-items-center gap-2">
+                    <li class="fw-medium">
+                        <a href="/" class="d-flex align-items-center gap-1 hover-text-primary">
+                            <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                            Volver a Inicio
+                        </a>
+                    </li>
+                    <li>-</li>
+                    <li class="fw-medium">Notificaciones</li>
+                </ul>
+            </div>
+
+            
+
+                    <!-- Contenedor de notificaciones en tiempo real -->
+                    <div id="notificaciones-contenedor">
+                        <h5 class="mb-3">Notificaciones en Tiempo Real</h5>
+                        <div id="notificaciones" class="notificaciones-lista"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <%- include('components/scripts') %>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/notifications.js"></script>
+</body>
+</html>
